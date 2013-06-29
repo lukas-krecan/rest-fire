@@ -19,7 +19,14 @@ import net.javacrumbs.restfire.httpcomponents.HttpComponentsMethodBuilder;
 
 public class RestFire {
 
+    public static String defaultUrlPrefix;
+
+
     public static MethodBuilder fire() {
-        return new HttpComponentsMethodBuilder();
+        return new HttpComponentsMethodBuilder(defaultUrlPrefix);
+    }
+
+    public static void setDefaultUriPrefix(String defaultUrlPrefix) {
+        RestFire.defaultUrlPrefix = defaultUrlPrefix;
     }
 }

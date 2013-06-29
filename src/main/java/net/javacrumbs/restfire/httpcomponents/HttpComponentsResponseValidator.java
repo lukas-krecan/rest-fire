@@ -19,6 +19,7 @@ import net.javacrumbs.restfire.ResponseValidator;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.util.EntityUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
@@ -28,10 +29,12 @@ import static org.hamcrest.CoreMatchers.is;
 
 public class HttpComponentsResponseValidator implements ResponseValidator {
     private final HttpResponse response;
+    private final String responseBody;
 
     public HttpComponentsResponseValidator(HttpClient httpClient, HttpRequestBase method) {
         try {
             this.response = httpClient.execute(method);
+            responseBody = EntityUtils.toString(response.getEntity());
         } catch (IOException e) {
             throw new IllegalArgumentException("Can not execute method", e);
         } finally {
@@ -45,11 +48,17 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
     }
 
     public ResponseValidator havingStatus(Matcher<Integer> statusMatcher) {
-        MatcherAssert.assertThat("Status codes are different", response.getStatusLine().getStatusCode(), statusMatcher);
+        MatcherAssert.assertThat("Expected different status code", response.getStatusLine().getStatusCode(), statusMatcher);
         return this;
     }
 
-    public ResponseValidator havingBodyEqualTo(String body) {
+    public ResponseValidator havingBodyEqualTo(CharSequence body) {
+        havingBody(is(body));
+        return this;
+    }
+
+    public ResponseValidator havingBody(Matcher<? super CharSequence> bodyMatcher) {
+        MatcherAssert.assertThat("Expected different body", responseBody, bodyMatcher);
         return this;
     }
 }

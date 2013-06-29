@@ -21,10 +21,25 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.net.URI;
+
 public class HttpComponentsMethodBuilder implements MethodBuilder {
     private final HttpClient httpClient = new DefaultHttpClient();
+    private final String defaultUriPrefix;
+
+    public HttpComponentsMethodBuilder(String defaultUrlPrefix) {
+        this.defaultUriPrefix = defaultUrlPrefix;
+    }
 
     public PostRequestBuilder postTo(String uri) {
-        return new HttpComponentsRequestBuilder(httpClient, new HttpPost(uri));
+        return new HttpComponentsRequestBuilder(httpClient, new HttpPost(constructUri(uri)));
+    }
+
+    private URI constructUri(String uri) {
+        if (defaultUriPrefix !=null) {
+            return URI.create(defaultUriPrefix + uri);
+        } else {
+            return URI.create(uri);
+        }
     }
 }
