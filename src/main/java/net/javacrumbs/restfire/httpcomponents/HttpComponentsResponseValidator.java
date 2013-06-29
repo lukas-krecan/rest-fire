@@ -76,12 +76,15 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
     }
 
     public ResponseValidator havingHeader(String name, Matcher<? super List<String>> headerMatcher) {
-        MatcherAssert.assertThat("Expected different header'"+name+"'", getHeaderValues(name), headerMatcher);
+        MatcherAssert.assertThat("Expected different header '"+name+"'", getHeaderValues(name), headerMatcher);
         return this;
     }
 
     private List<String> getHeaderValues(String name) {
         Header[] headers = response.getHeaders(name);
+        if (headers.length == 0) {
+            return null;
+        }
         List<String> headerValues = new ArrayList<String>(headers.length);
         for (Header header : headers) {
             headerValues.add(header.getValue());

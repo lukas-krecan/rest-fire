@@ -26,7 +26,7 @@ public interface RequestBuilder {
 
     RequestBuilder withUri(URI uri);
 
+    RequestBuilder withUri(String uri);
+
     ResponseValidator expectResponse();
-
-
 }

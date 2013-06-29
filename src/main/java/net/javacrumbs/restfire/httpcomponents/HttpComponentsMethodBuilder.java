@@ -16,9 +16,9 @@
 package net.javacrumbs.restfire.httpcomponents;
 
 import net.javacrumbs.restfire.BodyContainingRequestBuilder;
-import net.javacrumbs.restfire.Configuration;
 import net.javacrumbs.restfire.MethodBuilder;
 import net.javacrumbs.restfire.RequestBuilder;
+import net.javacrumbs.restfire.RequestProcessor;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -28,17 +28,14 @@ import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.URIBuilder;
-
-import java.net.URISyntaxException;
 
 public class HttpComponentsMethodBuilder implements MethodBuilder {
     private final HttpClient httpClient;
-    private final Configuration configuration;
+    private final RequestProcessor requestProcessor;
 
-    public HttpComponentsMethodBuilder(HttpClient httpClient, Configuration configuration) {
+    public HttpComponentsMethodBuilder(HttpClient httpClient, RequestProcessor requestProcessor) {
         this.httpClient = httpClient;
-        this.configuration = configuration;
+        this.requestProcessor = requestProcessor;
     }
 
     public BodyContainingRequestBuilder post() {
@@ -70,14 +67,18 @@ public class HttpComponentsMethodBuilder implements MethodBuilder {
     }
 
     private HttpComponentsRequestBuilder createRequestBuilder(HttpRequestBase request) {
-        return new HttpComponentsRequestBuilder(httpClient, request, createUriBuilder());
+        HttpComponentsRequestBuilder requestBuilder = doCreateRequestBuilder(request);
+        preprocessRequest(requestBuilder);
+        return requestBuilder;
     }
 
-    private URIBuilder createUriBuilder() {
-        try {
-            return new URIBuilder(configuration.getDefaultUriPrefix());
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Can not create URI", e);
+    protected void preprocessRequest(HttpComponentsRequestBuilder requestBuilder) {
+        if (requestProcessor!=null) {
+            requestProcessor.processRequest(requestBuilder);
         }
+    }
+
+    protected HttpComponentsRequestBuilder doCreateRequestBuilder(HttpRequestBase request) {
+        return new HttpComponentsRequestBuilder(httpClient, request);
     }
 }

@@ -31,12 +31,11 @@ import java.net.URISyntaxException;
 public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilder {
     private final HttpClient httpClient;
     private final HttpRequestBase request;
-    private URIBuilder uriBuilder;
+    private URIBuilder uriBuilder = new URIBuilder();
 
-    public HttpComponentsRequestBuilder(HttpClient httpClient, HttpRequestBase request, URIBuilder uriBuilder) {
+    public HttpComponentsRequestBuilder(HttpClient httpClient, HttpRequestBase request) {
         this.httpClient = httpClient;
         this.request = request;
-        this.uriBuilder = uriBuilder;
     }
 
     public RequestBuilder withBody(String body) {
@@ -72,14 +71,22 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
         return this;
     }
 
+    public RequestBuilder withUri(String uri) {
+        return withUri(URI.create(uri));
+    }
+
 
     public ResponseValidator expectResponse() {
         try {
             request.setURI(uriBuilder.build());
-            return new HttpComponentsResponseValidator(httpClient, request);
+            return doCreateResponseValidator();
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Can not build URI", e);
         }
 
+    }
+
+    protected HttpComponentsResponseValidator doCreateResponseValidator() {
+        return new HttpComponentsResponseValidator(httpClient, request);
     }
 }

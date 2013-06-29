@@ -15,17 +15,6 @@
  */
 package net.javacrumbs.restfire;
 
-public class Configuration {
-
-    private String defaultUriPrefix;
-
-
-    public String getDefaultUriPrefix() {
-        return defaultUriPrefix!=null ? defaultUriPrefix : "";
-    }
-
-    public Configuration withDefaultUriPrefix(String defaultUriPrefix) {
-        this.defaultUriPrefix = defaultUriPrefix;
-        return this;
-    }
+public abstract class RequestProcessor {
+    public abstract void processRequest(RequestBuilder requestBuilder);
 }

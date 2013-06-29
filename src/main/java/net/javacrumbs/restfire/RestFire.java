@@ -19,18 +19,34 @@ import net.javacrumbs.restfire.httpcomponents.HttpComponentsMethodBuilder;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+
+/**
+ * This is the entry point to rest-fire library. You can use it this way:
+ * <pre>
+ *     import static net.javacrumbs.restfire.*;
+ *
+ *     ...
+ *
+ *      fire().get().
+ *                withUri("https://www.google.com/search").
+ *                withQueryParameter("q", "rest-fire").
+ *                withHeader("Accept", "text/html").
+ *        expectResponse().
+ *                havingStatusEqualTo(200).
+ *                havingHeader("Content-Type", hasItem(startsWith("text/html"))).
+ *                havingBody(containsString("rest-fire"));
+ *
+ *
+ * </pre>
+ */
 public class RestFire {
 
-    private static Configuration configuration = new Configuration();
-
     private static HttpClient httpClient = new DefaultHttpClient();
+    private static RequestProcessor requestProcessor;
+
 
     public static MethodBuilder fire() {
-        return new HttpComponentsMethodBuilder(httpClient, configuration);
-    }
-
-    public static Configuration configure() {
-        return configuration;
+        return new HttpComponentsMethodBuilder(httpClient, requestProcessor);
     }
 
     public static HttpClient getHttpClient() {
@@ -39,5 +55,14 @@ public class RestFire {
 
     public static void setHttpClient(HttpClient httpClient) {
         RestFire.httpClient = httpClient;
+    }
+
+    public static void preprocessAllRequests(RequestProcessor requestProcessor) {
+        RestFire.requestProcessor = requestProcessor;
+    }
+
+    public static void resetToDefaultSetting() {
+        httpClient = new DefaultHttpClient();
+        requestProcessor = null;
     }
 }
