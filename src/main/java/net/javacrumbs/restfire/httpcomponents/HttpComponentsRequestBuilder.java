@@ -15,39 +15,71 @@
  */
 package net.javacrumbs.restfire.httpcomponents;
 
-import net.javacrumbs.restfire.PostRequestBuilder;
+import net.javacrumbs.restfire.BodyContainingRequestBuilder;
 import net.javacrumbs.restfire.RequestBuilder;
 import net.javacrumbs.restfire.ResponseValidator;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
-public class HttpComponentsRequestBuilder implements PostRequestBuilder {
+public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilder {
     private final HttpClient httpClient;
-    private final HttpRequestBase method;
+    private final HttpRequestBase request;
+    private URIBuilder uriBuilder;
 
-    public HttpComponentsRequestBuilder(HttpClient httpClient, HttpRequestBase method) {
+    public HttpComponentsRequestBuilder(HttpClient httpClient, HttpRequestBase request, URIBuilder uriBuilder) {
         this.httpClient = httpClient;
-        this.method = method;
+        this.request = request;
+        this.uriBuilder = uriBuilder;
     }
 
     public RequestBuilder withBody(String body) {
-        if (method instanceof HttpEntityEnclosingRequestBase) {
+        if (request instanceof HttpEntityEnclosingRequestBase) {
             try {
-                ((HttpEntityEnclosingRequestBase) method).setEntity(new StringEntity(body));
+                ((HttpEntityEnclosingRequestBase) request).setEntity(new StringEntity(body));
             } catch (UnsupportedEncodingException e) {
                 throw new IllegalArgumentException("Can not request body entity", e);
             }
         } else {
-            throw new IllegalStateException("Can not set body for request of type "+method);
+            throw new IllegalStateException("Can not set body for request of type "+ request);
         }
         return this;
     }
 
+    public BodyContainingRequestBuilder withHeader(String name, String value) {
+        request.addHeader(name, value);
+        return this;
+    }
+
+    public BodyContainingRequestBuilder withQueryParameter(String name, String value) {
+        uriBuilder.addParameter(name, value);
+        return this;
+    }
+
+    public BodyContainingRequestBuilder withPath(String path) {
+        uriBuilder.setPath(path);
+        return this;
+    }
+
+    public RequestBuilder withUri(URI uri) {
+        uriBuilder = new URIBuilder(uri);
+        return this;
+    }
+
+
     public ResponseValidator expectResponse() {
-        return new HttpComponentsResponseValidator(httpClient, method);
+        try {
+            request.setURI(uriBuilder.build());
+            return new HttpComponentsResponseValidator(httpClient, request);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Can not build URI", e);
+        }
+
     }
 }

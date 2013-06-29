@@ -15,8 +15,18 @@
  */
 package net.javacrumbs.restfire;
 
+import java.net.URI;
+
 public interface RequestBuilder {
-    RequestBuilder withBody(String body);
+    RequestBuilder withHeader(String name, String value);
+
+    RequestBuilder withQueryParameter(String name, String value);
+
+    RequestBuilder withPath(String uri);
+
+    RequestBuilder withUri(URI uri);
 
     ResponseValidator expectResponse();
+
+
 }

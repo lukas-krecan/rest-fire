@@ -16,6 +16,7 @@
 package net.javacrumbs.restfire.httpcomponents;
 
 import net.javacrumbs.restfire.ResponseValidator;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -24,7 +25,10 @@ import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 
 public class HttpComponentsResponseValidator implements ResponseValidator {
@@ -34,7 +38,11 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
     public HttpComponentsResponseValidator(HttpClient httpClient, HttpRequestBase method) {
         try {
             this.response = httpClient.execute(method);
-            responseBody = EntityUtils.toString(response.getEntity());
+            if (response.getEntity()!=null) {
+                responseBody = EntityUtils.toString(response.getEntity());
+            } else {
+                responseBody = null;
+            }
         } catch (IOException e) {
             throw new IllegalArgumentException("Can not execute method", e);
         } finally {
@@ -60,5 +68,24 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
     public ResponseValidator havingBody(Matcher<String> bodyMatcher) {
         MatcherAssert.assertThat("Expected different body", responseBody, bodyMatcher);
         return this;
+    }
+
+    public ResponseValidator havingHeaderEqualTo(String name, String value) {
+        havingHeader(name, hasItem(value));
+        return this;
+    }
+
+    public ResponseValidator havingHeader(String name, Matcher<? super List<String>> headerMatcher) {
+        MatcherAssert.assertThat("Expected different header'"+name+"'", getHeaderValues(name), headerMatcher);
+        return this;
+    }
+
+    private List<String> getHeaderValues(String name) {
+        Header[] headers = response.getHeaders(name);
+        List<String> headerValues = new ArrayList<String>(headers.length);
+        for (Header header : headers) {
+            headerValues.add(header.getValue());
+        }
+        return headerValues;
     }
 }

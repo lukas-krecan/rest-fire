@@ -1,5 +1,18 @@
 package net.javacrumbs.restfire;
 
 public interface MethodBuilder {
-    PostRequestBuilder postTo(String uri);
+    BodyContainingRequestBuilder post();
+
+    BodyContainingRequestBuilder put();
+
+    BodyContainingRequestBuilder patch();
+
+    RequestBuilder get();
+
+    RequestBuilder delete();
+
+    RequestBuilder head();
+
+    RequestBuilder options();
+
 }

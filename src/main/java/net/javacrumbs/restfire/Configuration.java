@@ -21,7 +21,7 @@ public class Configuration {
 
 
     public String getDefaultUriPrefix() {
-        return defaultUriPrefix;
+        return defaultUriPrefix!=null ? defaultUriPrefix : "";
     }
 
     public Configuration withDefaultUriPrefix(String defaultUriPrefix) {

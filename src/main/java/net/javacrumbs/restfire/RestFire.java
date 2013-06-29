@@ -16,16 +16,28 @@
 package net.javacrumbs.restfire;
 
 import net.javacrumbs.restfire.httpcomponents.HttpComponentsMethodBuilder;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 public class RestFire {
 
     private static Configuration configuration = new Configuration();
 
+    private static HttpClient httpClient = new DefaultHttpClient();
+
     public static MethodBuilder fire() {
-        return new HttpComponentsMethodBuilder(configuration);
+        return new HttpComponentsMethodBuilder(httpClient, configuration);
     }
 
     public static Configuration configure() {
         return configuration;
+    }
+
+    public static HttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    public static void setHttpClient(HttpClient httpClient) {
+        RestFire.httpClient = httpClient;
     }
 }
