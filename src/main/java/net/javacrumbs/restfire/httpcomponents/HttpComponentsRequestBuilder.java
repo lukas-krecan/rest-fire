@@ -28,6 +28,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * Configures {@link HttpClient}.
+ */
 public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilder {
     private final HttpClient httpClient;
     private final HttpRequestBase request;
@@ -75,7 +78,6 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
         return withUri(URI.create(uri));
     }
 
-
     public ResponseValidator expectResponse() {
         try {
             request.setURI(uriBuilder.build());
@@ -86,6 +88,10 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
 
     }
 
+    /**
+     * Creates response validator.
+     * @return
+     */
     protected HttpComponentsResponseValidator doCreateResponseValidator() {
         return new HttpComponentsResponseValidator(httpClient, request);
     }

@@ -31,6 +31,9 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 
+/**
+ * Validates the response.
+ */
 public class HttpComponentsResponseValidator implements ResponseValidator {
     private final HttpResponse response;
     private final String responseBody;

@@ -27,14 +27,14 @@ public class SampleTest {
 
     @Test
     public void testSearch() {
-        fire().get().
-                withUri("https://www.google.com/search").
-                withQueryParameter("q", "rest-fire").
-                withHeader("Accept", "text/html").
-        expectResponse().
-                havingStatusEqualTo(200).
-                havingHeader("Content-Type", hasItem(startsWith("text/html"))).
-                havingBody(containsString("rest-fire"));
+        fire().get()
+                .withUri("https://www.google.com/search")
+                .withQueryParameter("q", "rest-fire")
+                .withHeader("Accept", "text/html")
+        .expectResponse()
+                .havingStatusEqualTo(200)
+                .havingHeader("Content-Type", hasItem(startsWith("text/html")))
+                .havingBody(containsString("rest-fire"));
     }
 
 }

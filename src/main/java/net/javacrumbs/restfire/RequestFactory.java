@@ -15,54 +15,57 @@
  */
 package net.javacrumbs.restfire;
 
-import java.net.URI;
-
 /**
- * Interface for configuring the request.
+ * Creates the HTTP requests.
  */
-public interface RequestBuilder{
+public interface RequestFactory {
     /**
-     * Adds request header.
-     * @param name
-     * @param value
+     * Creates POST request.
+     *
      * @return
      */
-    RequestBuilder withHeader(String name, String value);
+    BodyContainingRequestBuilder post();
 
     /**
-     * Adds query parameter/
-     * @param name
-     * @param value
+     * Creates PUT request.
+     *
      * @return
      */
-    RequestBuilder withQueryParameter(String name, String value);
+    BodyContainingRequestBuilder put();
 
     /**
-     * Sets URI path for this request/
-     * @param uri
+     * Creates PATCH request.
+     *
      * @return
      */
-    RequestBuilder withPath(String uri);
+    BodyContainingRequestBuilder patch();
 
     /**
-     * Sets the whole URI for the request/
-     * @param uri
+     * Creates GET request.
+     *
      * @return
      */
-    RequestBuilder withUri(URI uri);
+    RequestBuilder get();
 
     /**
-     * Sets the whole URI for the request/
-     * @param uri
+     * Creates DELETE request.
+     *
      * @return
      */
-    RequestBuilder withUri(String uri);
+    RequestBuilder delete();
 
     /**
-     * Executes request and switches to response validation mode.
+     * Creates HEAD request.
+     *
      * @return
      */
-    ResponseValidator expectResponse();
+    RequestBuilder head();
 
+    /**
+     * Creates OPTIONS request.
+     *
+     * @return
+     */
+    RequestBuilder options();
 
 }

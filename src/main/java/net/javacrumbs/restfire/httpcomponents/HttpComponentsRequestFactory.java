@@ -16,7 +16,7 @@
 package net.javacrumbs.restfire.httpcomponents;
 
 import net.javacrumbs.restfire.BodyContainingRequestBuilder;
-import net.javacrumbs.restfire.MethodBuilder;
+import net.javacrumbs.restfire.RequestFactory;
 import net.javacrumbs.restfire.RequestBuilder;
 import net.javacrumbs.restfire.RequestProcessor;
 import org.apache.http.client.HttpClient;
@@ -29,11 +29,20 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 
-public class HttpComponentsMethodBuilder implements MethodBuilder {
+/**
+ * Apache HTTP client 4 based request factory. Use this directly class for advanced usage and special HttpClient
+ * configuration.
+ */
+public class HttpComponentsRequestFactory implements RequestFactory {
     private final HttpClient httpClient;
     private final RequestProcessor requestProcessor;
 
-    public HttpComponentsMethodBuilder(HttpClient httpClient, RequestProcessor requestProcessor) {
+    /**
+     * Creates HttpComponentsRequestFactory.
+     * @param httpClient
+     * @param requestProcessor is called just after each {@link RequestBuilder} creation. Can be used for default configuration setting.
+     */
+    public HttpComponentsRequestFactory(HttpClient httpClient, RequestProcessor requestProcessor) {
         this.httpClient = httpClient;
         this.requestProcessor = requestProcessor;
     }
@@ -72,12 +81,21 @@ public class HttpComponentsMethodBuilder implements MethodBuilder {
         return requestBuilder;
     }
 
+    /**
+     * Called after {@link RequestBuilder} creation.
+     * @param requestBuilder
+     */
     protected void preprocessRequest(HttpComponentsRequestBuilder requestBuilder) {
         if (requestProcessor!=null) {
             requestProcessor.processRequest(requestBuilder);
         }
     }
 
+    /**
+     * Creates {@link RequestBuilder}.
+     * @param request
+     * @return
+     */
     protected HttpComponentsRequestBuilder doCreateRequestBuilder(HttpRequestBase request) {
         return new HttpComponentsRequestBuilder(httpClient, request);
     }

@@ -15,6 +15,13 @@
  */
 package net.javacrumbs.restfire;
 
+/**
+ * Abstract callback class that can process requests.
+ */
 public abstract class RequestProcessor {
+    /**
+     * Implement this to proecess requests.
+     * @param requestBuilder
+     */
     public abstract void processRequest(RequestBuilder requestBuilder);
 }

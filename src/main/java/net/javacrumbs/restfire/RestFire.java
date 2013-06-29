@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.restfire;
 
-import net.javacrumbs.restfire.httpcomponents.HttpComponentsMethodBuilder;
+import net.javacrumbs.restfire.httpcomponents.HttpComponentsRequestFactory;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -38,31 +38,71 @@ import org.apache.http.impl.client.DefaultHttpClient;
  *
  *
  * </pre>
+ *
+ * For advanced usage use {@link net.javacrumbs.restfire.httpcomponents.HttpComponentsRequestFactory} directly, like this
+ *
+ * <pre>
+ *    private final HttpClient httpClient = new DefaultHttpClient();
+ *    private HttpComponentsRequestFactory fire;
+ *
+ *   {@literal @}Before
+ *    public void setUp() {
+ *        fire = new HttpComponentsRequestFactory(httpClient, new RequestProcessor() {
+ *            public void processRequest(RequestBuilder requestBuilder) {
+ *                requestBuilder.withUri("http://localhost:"+port());
+ *            }
+ *        });
+ *    }
+ *
+ *   {@literal @}Test
+ *    public void testPost() {
+ *         fire.post()
+ *                .withPath("/test")
+ *                .withHeader("Accept", "text/plain")
+ *                .withQueryParameter("param1", "paramValue")
+ *                .withBody("Request body")
+ *            .expectResponse()
+ *                .havingStatusEqualTo(200)
+ *                .havingHeaderEqualTo("Content-type", "text/plain")
+ *                .havingBodyEqualTo("Response");
+ *    }
+ * </pre>
+ *
  */
 public class RestFire {
 
-    private static HttpClient httpClient = new DefaultHttpClient();
+    private static final HttpClient httpClient = new DefaultHttpClient();
     private static RequestProcessor requestProcessor;
 
-
-    public static MethodBuilder fire() {
-        return new HttpComponentsMethodBuilder(httpClient, requestProcessor);
+    /**
+     * Use this method to fire HTTP requests.
+     * @return
+     */
+    public static RequestFactory fire() {
+        return new HttpComponentsRequestFactory(httpClient, requestProcessor);
     }
 
-    public static HttpClient getHttpClient() {
-        return httpClient;
-    }
-
-    public static void setHttpClient(HttpClient httpClient) {
-        RestFire.httpClient = httpClient;
-    }
-
+    /**
+     * Set-up a {@link RequestProcessor} to preprocess all requests. For example
+     *
+     * <pre>
+     *     RestFire.preprocessAllRequests(new RequestProcessor() {
+     *            public void processRequest(RequestBuilder requestBuilder) {
+     *                requestBuilder.withUri("http://localhost:" + port());
+     *            }
+     *        });
+     *
+     * </pre>
+     * @param requestProcessor
+     */
     public static void preprocessAllRequests(RequestProcessor requestProcessor) {
         RestFire.requestProcessor = requestProcessor;
     }
 
+    /**
+     * Resets the library to the original settings.
+     */
     public static void resetToDefaultSetting() {
-        httpClient = new DefaultHttpClient();
         requestProcessor = null;
     }
 }
