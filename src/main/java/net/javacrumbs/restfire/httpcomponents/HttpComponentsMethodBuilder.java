@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.restfire;
+package net.javacrumbs.restfire.httpcomponents;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import net.javacrumbs.restfire.MethodBuilder;
+import net.javacrumbs.restfire.PostRequestBuilder;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 
-public class HttpConnectionMethodBuilder implements MethodBuilder {
+public class HttpComponentsMethodBuilder implements MethodBuilder {
+    private final HttpClient httpClient = new DefaultHttpClient();
 
     public PostRequestBuilder postTo(String uri) {
-        try {
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL(uri).openConnection();
-            urlConnection.setRequestMethod("POST");
-            return new HttpConnectionRequestBuilder(urlConnection);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Can not open connection", e);
-        }
+        return new HttpComponentsRequestBuilder(httpClient, new HttpPost(uri));
     }
 }

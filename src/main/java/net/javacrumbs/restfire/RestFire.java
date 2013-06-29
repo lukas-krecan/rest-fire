@@ -15,9 +15,11 @@
  */
 package net.javacrumbs.restfire;
 
+import net.javacrumbs.restfire.httpcomponents.HttpComponentsMethodBuilder;
+
 public class RestFire {
 
     public static MethodBuilder fire() {
-        return new HttpConnectionMethodBuilder();
+        return new HttpComponentsMethodBuilder();
     }
 }
