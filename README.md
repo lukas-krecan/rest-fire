@@ -44,3 +44,34 @@ To set default values for requests, use RequestProcessor
                 requestBuilder.withUri("http://localhost:" + port());
             }
     });
+    
+Advanced configuration
+----------------------
+If you need advanced configuration, use HttpComponentsRequestFactory directly
+    
+    private final HttpClient httpClient = new DefaultHttpClient();
+    private HttpComponentsRequestFactory fire;
+
+    @Before
+    public void setUp() {
+        fire = new HttpComponentsRequestFactory(httpClient, new RequestProcessor() {
+            @Override
+            public void processRequest(RequestBuilder requestBuilder) {
+                requestBuilder.withUri("http://localhost:"+port());
+            }
+        });
+    }
+
+    @Test
+    public void testPost() {
+        fire.post()
+                .withPath("/test")
+                .withHeader("Accept", "text/plain")
+                .withQueryParameter("param1", "paramValue")
+                .withBody("Request body")
+            .expectResponse()
+                .havingStatusEqualTo(200)
+                .havingHeaderEqualTo("Content-type", "text/plain")
+                .havingBodyEqualTo("Response");
+    }
+
