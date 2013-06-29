@@ -52,12 +52,12 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
         return this;
     }
 
-    public ResponseValidator havingBodyEqualTo(CharSequence body) {
+    public ResponseValidator havingBodyEqualTo(String body) {
         havingBody(is(body));
         return this;
     }
 
-    public ResponseValidator havingBody(Matcher<? super CharSequence> bodyMatcher) {
+    public ResponseValidator havingBody(Matcher<String> bodyMatcher) {
         MatcherAssert.assertThat("Expected different body", responseBody, bodyMatcher);
         return this;
     }

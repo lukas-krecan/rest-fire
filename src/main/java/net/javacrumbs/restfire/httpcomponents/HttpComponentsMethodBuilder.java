@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.restfire.httpcomponents;
 
+import net.javacrumbs.restfire.Configuration;
 import net.javacrumbs.restfire.MethodBuilder;
 import net.javacrumbs.restfire.PostRequestBuilder;
 import org.apache.http.client.HttpClient;
@@ -25,10 +26,10 @@ import java.net.URI;
 
 public class HttpComponentsMethodBuilder implements MethodBuilder {
     private final HttpClient httpClient = new DefaultHttpClient();
-    private final String defaultUriPrefix;
+    private final Configuration configuration;
 
-    public HttpComponentsMethodBuilder(String defaultUrlPrefix) {
-        this.defaultUriPrefix = defaultUrlPrefix;
+    public HttpComponentsMethodBuilder(Configuration defaultUrlPrefix) {
+        this.configuration = defaultUrlPrefix;
     }
 
     public PostRequestBuilder postTo(String uri) {
@@ -36,6 +37,7 @@ public class HttpComponentsMethodBuilder implements MethodBuilder {
     }
 
     private URI constructUri(String uri) {
+        String defaultUriPrefix = configuration.getDefaultUriPrefix();
         if (defaultUriPrefix !=null) {
             return URI.create(defaultUriPrefix + uri);
         } else {

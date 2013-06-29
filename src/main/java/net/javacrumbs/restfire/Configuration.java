@@ -15,17 +15,17 @@
  */
 package net.javacrumbs.restfire;
 
-import net.javacrumbs.restfire.httpcomponents.HttpComponentsMethodBuilder;
+public class Configuration {
 
-public class RestFire {
+    private String defaultUriPrefix;
 
-    private static Configuration configuration = new Configuration();
 
-    public static MethodBuilder fire() {
-        return new HttpComponentsMethodBuilder(configuration);
+    public String getDefaultUriPrefix() {
+        return defaultUriPrefix;
     }
 
-    public static Configuration configure() {
-        return configuration;
+    public Configuration withDefaultUriPrefix(String defaultUriPrefix) {
+        this.defaultUriPrefix = defaultUriPrefix;
+        return this;
     }
 }
