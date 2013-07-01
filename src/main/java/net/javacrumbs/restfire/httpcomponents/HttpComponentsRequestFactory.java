@@ -16,8 +16,8 @@
 package net.javacrumbs.restfire.httpcomponents;
 
 import net.javacrumbs.restfire.BodyContainingRequestBuilder;
-import net.javacrumbs.restfire.RequestFactory;
 import net.javacrumbs.restfire.RequestBuilder;
+import net.javacrumbs.restfire.RequestFactory;
 import net.javacrumbs.restfire.RequestProcessor;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;

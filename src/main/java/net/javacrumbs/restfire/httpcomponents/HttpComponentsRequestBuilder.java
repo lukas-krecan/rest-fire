@@ -17,6 +17,7 @@ package net.javacrumbs.restfire.httpcomponents;
 
 import net.javacrumbs.restfire.BodyContainingRequestBuilder;
 import net.javacrumbs.restfire.RequestBuilder;
+import net.javacrumbs.restfire.RequestProcessor;
 import net.javacrumbs.restfire.ResponseValidator;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -34,11 +35,12 @@ import java.net.URISyntaxException;
 public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilder {
     private final HttpClient httpClient;
     private final HttpRequestBase request;
-    private URIBuilder uriBuilder = new URIBuilder();
+    private URIBuilder uriBuilder;
 
     public HttpComponentsRequestBuilder(HttpClient httpClient, HttpRequestBase request) {
         this.httpClient = httpClient;
         this.request = request;
+        uriBuilder = new URIBuilder(URI.create("http://localhost:8080"));
     }
 
     public RequestBuilder withBody(String body) {
@@ -50,6 +52,33 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
             }
         } else {
             throw new IllegalStateException("Can not set body for request of type "+ request);
+        }
+        return this;
+    }
+
+    public BodyContainingRequestBuilder to(String address) {
+        return to(URI.create(address));
+    }
+
+    public BodyContainingRequestBuilder to(URI address) {
+        if (address.getScheme()!=null && address.getScheme().length()>0) {
+            uriBuilder.setScheme(address.getScheme());
+        }
+        //if host is defined, we have to rewrite port
+        if (address.getHost()!=null){
+            uriBuilder.setPort(address.getPort());
+        }
+        if (address.getHost()!=null) {
+            uriBuilder.setHost(address.getHost());
+        }
+        if (address.getPath()!=null) {
+            uriBuilder.setPath(address.getPath());
+        }
+        if (address.getQuery()!=null) {
+            uriBuilder.setQuery(address.getQuery());
+        }
+        if (address.getFragment()!=null) {
+            uriBuilder.setFragment(address.getFragment());
         }
         return this;
     }
@@ -69,13 +98,33 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
         return this;
     }
 
-    public RequestBuilder withUri(URI uri) {
+    public BodyContainingRequestBuilder withPort(int port) {
+        uriBuilder.setPort(port);
+        return this;
+    }
+
+    public BodyContainingRequestBuilder withHost(String host) {
+        uriBuilder.setHost(host);
+        return this;
+    }
+
+    public BodyContainingRequestBuilder withScheme(String scheme) {
+        uriBuilder.setScheme(scheme);
+        return this;
+    }
+
+    public BodyContainingRequestBuilder withUri(URI uri) {
         uriBuilder = new URIBuilder(uri);
         return this;
     }
 
-    public RequestBuilder withUri(String uri) {
+    public BodyContainingRequestBuilder withUri(String uri) {
         return withUri(URI.create(uri));
+    }
+
+    public BodyContainingRequestBuilder with(RequestProcessor requestProcessor) {
+        requestProcessor.processRequest(this);
+        return this;
     }
 
     public ResponseValidator expectResponse() {
@@ -86,6 +135,11 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
             throw new IllegalArgumentException("Can not build URI", e);
         }
 
+    }
+
+    //for test
+    URIBuilder getUriBuilder() {
+        return uriBuilder;
     }
 
     /**

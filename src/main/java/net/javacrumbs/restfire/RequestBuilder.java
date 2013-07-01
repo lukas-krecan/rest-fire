@@ -20,7 +20,24 @@ import java.net.URI;
 /**
  * Interface for configuring the request.
  */
-public interface RequestBuilder{
+public interface RequestBuilder {
+
+    /**
+     * Sends request to address. Works in a clever way as to not override
+     * values set by {@link #withHost(String)}, {@link #withPort(int)}  etc.
+     * @param address
+     * @return
+     */
+    RequestBuilder to(String address);
+
+    /**
+     * Sends request to address. Works in a clever way as to not override
+     * values set by {@link #withHost(String)}, {@link #withPort(int)}  etc.
+     * @param address
+     * @return
+     */
+    RequestBuilder to(URI address);
+
     /**
      * Adds request header.
      * @param name
@@ -30,7 +47,7 @@ public interface RequestBuilder{
     RequestBuilder withHeader(String name, String value);
 
     /**
-     * Adds query parameter/
+     * Adds query parameter.
      * @param name
      * @param value
      * @return
@@ -38,25 +55,53 @@ public interface RequestBuilder{
     RequestBuilder withQueryParameter(String name, String value);
 
     /**
-     * Sets URI path for this request/
+     * Sets URI path for the request.
      * @param uri
      * @return
      */
     RequestBuilder withPath(String uri);
 
     /**
-     * Sets the whole URI for the request/
+     * Sets port for the request.
+     * @param port
+     * @return
+     */
+    RequestBuilder withPort(int port);
+
+    /**
+     * Sets port for the request.
+     * @param host
+     * @return
+     */
+    RequestBuilder withHost(String host);
+
+    /**
+     * Sets scheme for the request.
+     * @param scheme
+     * @return
+     */
+    RequestBuilder withScheme(String scheme);
+
+    /**
+     * Sets the whole URI for the request. Default value is http://locahost:8080.
      * @param uri
      * @return
      */
     RequestBuilder withUri(URI uri);
 
     /**
-     * Sets the whole URI for the request/
+     * Sets the whole URI for the request. Default value is http://locahost:8080.
      * @param uri
      * @return
      */
     RequestBuilder withUri(String uri);
+
+    /**
+     * Advanced configuration. RequestProcess can set multiple parameters at once.
+     * @param requestProcessor
+     * @return
+     */
+    RequestBuilder with(RequestProcessor requestProcessor);
 
     /**
      * Executes request and switches to response validation mode.

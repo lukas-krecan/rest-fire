@@ -28,16 +28,18 @@ import static net.jadler.Jadler.onRequest;
 import static net.jadler.Jadler.port;
 
 public class AdvancedTest {
-    private final HttpClient httpClient = new DefaultHttpClient();
-    private HttpComponentsRequestFactory fire;
+    private final HttpClient httpClient = new DefaultHttpClient(/** HTTP client config**/);
 
     @Before
     public void setUp() {
         initJadler();
-        fire = new HttpComponentsRequestFactory(httpClient, new RequestProcessor() {
+    }
+
+    private RequestFactory fire() {
+        return new HttpComponentsRequestFactory(httpClient, new RequestProcessor() {
             @Override
             public void processRequest(RequestBuilder requestBuilder) {
-                requestBuilder.withUri("http://localhost:"+port());
+                requestBuilder.withPort(port());
             }
         });
     }
@@ -57,8 +59,7 @@ public class AdvancedTest {
                 .havingBodyEqualTo("Request body")
                 .respond().withStatus(200).withHeader("Content-Type", "text/plain").withBody("Response");
 
-        fire.post()
-                .withPath("/test")
+        fire().post().to("/test")
                 .withHeader("Accept", "text/plain")
                 .withQueryParameter("param1", "paramValue")
                 .withBody("Request body")
