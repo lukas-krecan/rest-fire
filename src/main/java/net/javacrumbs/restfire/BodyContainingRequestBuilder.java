@@ -15,12 +15,10 @@
  */
 package net.javacrumbs.restfire;
 
-import java.net.URI;
-
 /**
  * {@link RequestBuilder} for PUT, POST and PATCH request that can contain body.
  */
-public interface BodyContainingRequestBuilder extends RequestBuilder {
+public interface BodyContainingRequestBuilder extends RequestBuilder<BodyContainingRequestBuilder> {
     /**
      * Sets request body.
      *
@@ -28,59 +26,4 @@ public interface BodyContainingRequestBuilder extends RequestBuilder {
      * @return
      */
     RequestBuilder withBody(String body);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder to(String address);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder to(URI address);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder withHeader(String name, String value);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder withQueryParameter(String name, String value);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder withPath(String uri);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder withPort(int port);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder withHost(String host);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder withScheme(String scheme);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder withUri(URI uri);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder withUri(String uri);
-
-    /**
-     * {@inheritDoc}
-     */
-    BodyContainingRequestBuilder with(RequestProcessor requestProcessor);
 }
