@@ -90,3 +90,6 @@ If you need advanced configuration, use HttpComponentsRequestFactory directly
                 .havingBodyEqualTo("Response");
     }
 
+License
+-------
+REST fire is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0).
