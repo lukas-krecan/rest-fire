@@ -4,7 +4,8 @@ REST fire
 Simple DSL for REST API testing. It's basically a thin wrapper around [Apache HTTP client 4](https://hc.apache.org/httpcomponents-client-ga/)
 that makes the API easier to use in integration test. 
 
-It's a simpler alternative to [REST Assured](https://code.google.com/p/rest-assured/) with more straightforward syntax.
+It's a simpler alternative to [REST Assured](https://code.google.com/p/rest-assured/) with more straightforward syntax
+inspired by [Jadler](http://jadler.net).
 
 Basic usage
 -----------
