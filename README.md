@@ -14,8 +14,7 @@ Basic usage
     
     @Test
     public void testGoogleSearch() {
-        fire().get().to("https://www.google.com/search")
-                .withQueryParameter("q", "rest-fire")
+        fire().get().to("https://www.google.com/search?q=rest-fire")
                 .withHeader("Accept", "text/html")
         .expectResponse()
                 .havingStatusEqualTo(200)
@@ -40,7 +39,7 @@ To set default values for requests, use RequestProcessor
     //sets default URI for all requests
     RestFire.preprocessAllRequests(new RequestProcessor() {
             public void processRequest(RequestBuilder requestBuilder) {
-                requestBuilder.withUri("http://localhost:" + port());
+                requestBuilder.withPort(port());
             }
     });
 
