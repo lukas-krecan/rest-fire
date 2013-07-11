@@ -61,25 +61,7 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
     }
 
     public BodyContainingRequestBuilder to(URI address) {
-        if (address.getScheme()!=null && address.getScheme().length()>0) {
-            uriBuilder.setScheme(address.getScheme());
-        }
-        //if host is defined, we have to rewrite port
-        if (address.getHost()!=null){
-            uriBuilder.setPort(address.getPort());
-        }
-        if (address.getHost()!=null) {
-            uriBuilder.setHost(address.getHost());
-        }
-        if (address.getPath()!=null) {
-            uriBuilder.setPath(address.getPath());
-        }
-        if (address.getQuery()!=null) {
-            uriBuilder.setQuery(address.getQuery());
-        }
-        if (address.getFragment()!=null) {
-            uriBuilder.setFragment(address.getFragment());
-        }
+        uriBuilder = new URIBuilder(buildUri().resolve(address));
         return this;
     }
 
@@ -113,6 +95,11 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
         return this;
     }
 
+    public BodyContainingRequestBuilder withFragment(String fragment) {
+        uriBuilder.setFragment(fragment);
+        return this;
+    }
+
     public BodyContainingRequestBuilder withUri(URI uri) {
         uriBuilder = new URIBuilder(uri);
         return this;
@@ -128,13 +115,16 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
     }
 
     public ResponseValidator expectResponse() {
+        request.setURI(buildUri());
+        return doCreateResponseValidator();
+    }
+
+    private URI buildUri() {
         try {
-            request.setURI(uriBuilder.build());
-            return doCreateResponseValidator();
+            return uriBuilder.build();
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Can not build URI", e);
         }
-
     }
 
     //for test

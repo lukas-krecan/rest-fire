@@ -49,4 +49,33 @@ public class HttpComponentsRequestBuilderTest {
 
         assertEquals(URI.create("http://localhost:8080/test?q=1"), requestBuilder.getUriBuilder().build());
     }
+
+    @Test
+    public void testToAllInclusive() throws URISyntaxException {
+        requestBuilder.to("https://bob:bobby@www.lunatech.com:8080/file;p=1?q=2#third");
+
+        assertEquals(URI.create("https://bob:bobby@www.lunatech.com:8080/file;p=1?q=2#third"), requestBuilder.getUriBuilder().build());
+    }
+
+    /**
+     * Inspired by http://blog.lunatech.com/2009/02/03/what-every-web-developer-must-know-about-url-encoding
+     * @throws URISyntaxException
+     */
+    @Test
+    public void testToWeirdEncoding() throws URISyntaxException {
+        requestBuilder.to("http://example.com/a%2Fb%3Fc");
+
+        assertEquals(URI.create("http://example.com/a%2Fb%3Fc"), requestBuilder.getUriBuilder().build());
+    }
+
+    /**
+     * Inspired by http://blog.lunatech.com/2009/02/03/what-every-web-developer-must-know-about-url-encoding
+     * @throws URISyntaxException
+     */
+    @Test
+    public void testToWeirdEncoding2() throws URISyntaxException {
+        requestBuilder.to("http://example.com/blue%2Fred%3Fand+green");
+
+        assertEquals(URI.create("http://example.com/blue%2Fred%3Fand+green"), requestBuilder.getUriBuilder().build());
+    }
 }

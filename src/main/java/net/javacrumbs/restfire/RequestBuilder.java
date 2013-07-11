@@ -83,6 +83,14 @@ public interface RequestBuilder<T extends RequestBuilder<T>>  {
     T withScheme(String scheme);
 
     /**
+     * Sets URI fragment.
+     * @param fragment
+     * @return
+     */
+    T withFragment(String fragment);
+
+
+    /**
      * Sets the whole URI for the request. Default value is http://locahost:8080.
      * @param uri
      * @return
