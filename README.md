@@ -64,18 +64,15 @@ Usually you want to set some default setting. It's possible to do it in the foll
 
 Advanced configuration
 ----------------------
-If you need advanced configuration, use HttpComponentsRequestFactory directly
+If you need advanced configuration, use HttpComponentsRequestFactory directly and write your own fire method
     
+    //your custom setting of HttpClient
     private final HttpClient httpClient = new DefaultHttpClient(/** HTTP client config**/);
 
+
+    // your own fire method    
     private RequestFactory fire() {
-        //will be applied to all requests
-        return new HttpComponentsRequestFactory(httpClient, new RequestProcessor() {
-            @Override
-            public void processRequest(RequestBuilder requestBuilder) {
-                requestBuilder.withPort(80));
-            }
-        });
+        return new HttpComponentsRequestFactory(httpClient, null);
     }
 
     @Test
