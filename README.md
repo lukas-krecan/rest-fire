@@ -24,15 +24,6 @@ Basic usage
     }
     
 
-Maven dependency
-----------------
-    <dependency>
-      <groupId>net.javacrumbs.rest-fire</groupId>
-      <artifactId>rest-fire</artifactId>
-      <version>0.0.3</version>
-      <scope>test</scope>
-    </dependency>
-    
 Default setting
 ---------------
 To set default values for requests, use RequestProcessor
@@ -86,6 +77,48 @@ If you need advanced configuration, use HttpComponentsRequestFactory directly an
                 .havingHeaderEqualTo("Content-type", "text/plain")
                 .havingBodyEqualTo("Response");
     }
+
+
+JSON comparison
+---------------
+REST fire does not support JSOn comparison, but you can use [JsonUnit](https://github.com/lukas-krecan/JsonUnit) in
+the following way (you just have to add the dependency)
+
+        //compare the whole document, ignore part of it
+        fire().get().to("/path").expectResponse().havingBody(jsonEquals("{\n" +
+                "   \"employees\":[\n" +
+                "      {\n" +
+                "         \"firstName\":\"John\",\n" +
+                "         \"lastName\":\"Doe\"\n" +
+                "      },\n" +
+                "      {\n" +
+                "         \"firstName\":\"Anna\",\n" +
+                "         \"lastName\":\"Smith\"\n" +
+                "      },\n" +
+                "      \"${json-unit.ignore}\"\n" +
+                "   ]\n" +
+                "}"));
+
+
+        ///Compare just one element
+        fire().get().to("/path").expectResponse().havingBody(jsonPartEquals("employees[1].firstName", "\"Anna\""));
+
+        ///Compare part of the document
+        fire().get().to("/path").expectResponse().havingBody(jsonPartEquals("employees[1]",
+                        "      {" +
+                        "         \"firstName\":\"Anna\"," +
+                        "         \"lastName\":\"Smith\"" +
+                        "      }"));
+
+
+Maven dependency
+----------------
+    <dependency>
+      <groupId>net.javacrumbs.rest-fire</groupId>
+      <artifactId>rest-fire</artifactId>
+      <version>0.0.3</version>
+      <scope>test</scope>
+    </dependency>
 
 License
 -------
