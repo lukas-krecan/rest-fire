@@ -81,7 +81,7 @@ If you need advanced configuration, use HttpComponentsRequestFactory directly an
 
 JSON comparison
 ---------------
-REST fire does not support JSOn comparison, but you can use [JsonUnit](https://github.com/lukas-krecan/JsonUnit) in
+REST fire does not support JSON comparison, but you can use [JsonUnit](https://github.com/lukas-krecan/JsonUnit) in
 the following way (you just have to add the dependency)
 
         //compare the whole document, ignore part of it
