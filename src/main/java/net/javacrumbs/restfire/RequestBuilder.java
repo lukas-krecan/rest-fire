@@ -25,6 +25,7 @@ public interface RequestBuilder<T extends RequestBuilder<T>>  {
     /**
      * Sends request to address. Works in a clever way as to not override
      * values set by {@link #withHost(String)}, {@link #withPort(int)}  etc.
+     * See {@link URI#resolve(URI)} for more details.
      * @param address
      * @return
      */
@@ -33,6 +34,7 @@ public interface RequestBuilder<T extends RequestBuilder<T>>  {
     /**
      * Sends request to address. Works in a clever way as to not override
      * values set by {@link #withHost(String)}, {@link #withPort(int)}  etc.
+     * See {@link URI#resolve(URI)} for more details.
      * @param address
      * @return
      */

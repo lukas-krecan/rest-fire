@@ -57,6 +57,19 @@ public class HttpComponentsRequestBuilderTest {
         assertEquals(URI.create("https://bob:bobby@www.lunatech.com:8080/file;p=1?q=2#third"), requestBuilder.getUriBuilder().build());
     }
 
+    @Test
+    public void testDoubleTo() throws URISyntaxException {
+        requestBuilder.to("http://test/path1").to("/path2");
+
+        assertEquals(URI.create("http://test/path2"), requestBuilder.getUriBuilder().build());
+    }
+
+    @Test
+    public void testDoubleTo2() throws URISyntaxException {
+        requestBuilder.to("http://test/path1/").to("path2");
+
+        assertEquals(URI.create("http://test/path1/path2"), requestBuilder.getUriBuilder().build());
+    }
     /**
      * Inspired by http://blog.lunatech.com/2009/02/03/what-every-web-developer-must-know-about-url-encoding
      * @throws URISyntaxException
