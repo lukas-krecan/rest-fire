@@ -200,7 +200,7 @@ public class RestTest {
                 .havingHeaderEqualTo("Content-type", "text/plain");
     }
 
-    public void doSimpleTestWithRequestBody(String method, BodyContainingRequestBuilder fireRequest) {
+    public void doSimpleTestWithRequestBody(String method, RequestBuilder fireRequest) {
         onRequest()
                 .havingMethodEqualTo(method)
                 .havingURIEqualTo("/test")

@@ -24,21 +24,21 @@ public interface RequestFactory {
      *
      * @return
      */
-    BodyContainingRequestBuilder post();
+    RequestBuilder post();
 
     /**
      * Creates PUT request.
      *
      * @return
      */
-    BodyContainingRequestBuilder put();
+    RequestBuilder put();
 
     /**
      * Creates PATCH request.
      *
      * @return
      */
-    BodyContainingRequestBuilder patch();
+    RequestBuilder patch();
 
     /**
      * Creates GET request.

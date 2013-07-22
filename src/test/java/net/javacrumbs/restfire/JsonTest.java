@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.restfire;
 
-import net.javacrumbs.jsonunit.JsonMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

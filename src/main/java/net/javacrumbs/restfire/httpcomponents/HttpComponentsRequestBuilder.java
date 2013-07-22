@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.restfire.httpcomponents;
 
-import net.javacrumbs.restfire.BodyContainingRequestBuilder;
 import net.javacrumbs.restfire.RequestBuilder;
 import net.javacrumbs.restfire.RequestProcessor;
 import net.javacrumbs.restfire.ResponseValidator;
@@ -32,7 +31,7 @@ import java.net.URISyntaxException;
 /**
  * Configures {@link HttpClient}.
  */
-public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilder {
+public class HttpComponentsRequestBuilder implements RequestBuilder {
     private final HttpClient httpClient;
     private final HttpRequestBase request;
     private URIBuilder uriBuilder;
@@ -51,65 +50,65 @@ public class HttpComponentsRequestBuilder implements BodyContainingRequestBuilde
                 throw new IllegalArgumentException("Can not request body entity", e);
             }
         } else {
-            throw new IllegalStateException("Can not set body for request of type "+ request);
+            throw new IllegalStateException("Can not set body for request of type " + request);
         }
         return this;
     }
 
-    public BodyContainingRequestBuilder to(String address) {
+    public RequestBuilder to(String address) {
         return to(URI.create(address));
     }
 
-    public BodyContainingRequestBuilder to(URI address) {
+    public RequestBuilder to(URI address) {
         uriBuilder = new URIBuilder(buildUri().resolve(address));
         return this;
     }
 
-    public BodyContainingRequestBuilder withHeader(String name, String value) {
+    public RequestBuilder withHeader(String name, String value) {
         request.addHeader(name, value);
         return this;
     }
 
-    public BodyContainingRequestBuilder withQueryParameter(String name, String value) {
+    public RequestBuilder withQueryParameter(String name, String value) {
         uriBuilder.addParameter(name, value);
         return this;
     }
 
-    public BodyContainingRequestBuilder withPath(String path) {
+    public RequestBuilder withPath(String path) {
         uriBuilder.setPath(path);
         return this;
     }
 
-    public BodyContainingRequestBuilder withPort(int port) {
+    public RequestBuilder withPort(int port) {
         uriBuilder.setPort(port);
         return this;
     }
 
-    public BodyContainingRequestBuilder withHost(String host) {
+    public RequestBuilder withHost(String host) {
         uriBuilder.setHost(host);
         return this;
     }
 
-    public BodyContainingRequestBuilder withScheme(String scheme) {
+    public RequestBuilder withScheme(String scheme) {
         uriBuilder.setScheme(scheme);
         return this;
     }
 
-    public BodyContainingRequestBuilder withFragment(String fragment) {
+    public RequestBuilder withFragment(String fragment) {
         uriBuilder.setFragment(fragment);
         return this;
     }
 
-    public BodyContainingRequestBuilder withUri(URI uri) {
+    public RequestBuilder withUri(URI uri) {
         uriBuilder = new URIBuilder(uri);
         return this;
     }
 
-    public BodyContainingRequestBuilder withUri(String uri) {
+    public RequestBuilder withUri(String uri) {
         return withUri(URI.create(uri));
     }
 
-    public BodyContainingRequestBuilder with(RequestProcessor requestProcessor) {
+    public RequestBuilder with(RequestProcessor requestProcessor) {
         requestProcessor.processRequest(this);
         return this;
     }

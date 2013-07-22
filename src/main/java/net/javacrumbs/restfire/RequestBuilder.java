@@ -20,7 +20,7 @@ import java.net.URI;
 /**
  * Interface for configuring the request.
  */
-public interface RequestBuilder<T extends RequestBuilder<T>>  {
+public interface RequestBuilder  {
 
     /**
      * Sends request to address. Works in a clever way as to not override
@@ -29,7 +29,7 @@ public interface RequestBuilder<T extends RequestBuilder<T>>  {
      * @param address
      * @return
      */
-    T to(String address);
+    RequestBuilder to(String address);
 
     /**
      * Sends request to address. Works in a clever way as to not override
@@ -38,7 +38,7 @@ public interface RequestBuilder<T extends RequestBuilder<T>>  {
      * @param address
      * @return
      */
-    T to(URI address);
+    RequestBuilder to(URI address);
 
     /**
      * Adds request header.
@@ -46,7 +46,7 @@ public interface RequestBuilder<T extends RequestBuilder<T>>  {
      * @param value
      * @return
      */
-    T withHeader(String name, String value);
+    RequestBuilder withHeader(String name, String value);
 
     /**
      * Adds query parameter.
@@ -54,42 +54,42 @@ public interface RequestBuilder<T extends RequestBuilder<T>>  {
      * @param value
      * @return
      */
-    T withQueryParameter(String name, String value);
+    RequestBuilder withQueryParameter(String name, String value);
 
     /**
      * Sets URI path for the request.
      * @param uri
      * @return
      */
-    T withPath(String uri);
+    RequestBuilder withPath(String uri);
 
     /**
      * Sets port for the request.
      * @param port
      * @return
      */
-    T withPort(int port);
+    RequestBuilder withPort(int port);
 
     /**
      * Sets port for the request.
      * @param host
      * @return
      */
-    T withHost(String host);
+    RequestBuilder withHost(String host);
 
     /**
      * Sets scheme for the request.
      * @param scheme
      * @return
      */
-    T withScheme(String scheme);
+    RequestBuilder withScheme(String scheme);
 
     /**
      * Sets URI fragment.
      * @param fragment
      * @return
      */
-    T withFragment(String fragment);
+    RequestBuilder withFragment(String fragment);
 
 
     /**
@@ -97,21 +97,29 @@ public interface RequestBuilder<T extends RequestBuilder<T>>  {
      * @param uri
      * @return
      */
-    T withUri(URI uri);
+    RequestBuilder withUri(URI uri);
 
     /**
      * Sets the whole URI for the request. Default value is http://locahost:8080.
      * @param uri
      * @return
      */
-    T withUri(String uri);
+    RequestBuilder withUri(String uri);
+
+    /**
+     * Sets request body.
+     *
+     * @param body
+     * @return
+     */
+    RequestBuilder withBody(String body);
 
     /**
      * Advanced configuration. RequestProcess can set multiple parameters at once.
      * @param requestProcessor
      * @return
      */
-    T with(RequestProcessor requestProcessor);
+    RequestBuilder with(RequestProcessor requestProcessor);
 
     /**
      * Executes request and switches to response validation mode.

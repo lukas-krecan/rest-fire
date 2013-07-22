@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.restfire.httpcomponents;
 
-import net.javacrumbs.restfire.BodyContainingRequestBuilder;
 import net.javacrumbs.restfire.RequestBuilder;
 import net.javacrumbs.restfire.RequestFactory;
 import net.javacrumbs.restfire.RequestProcessor;
@@ -47,15 +46,15 @@ public class HttpComponentsRequestFactory implements RequestFactory {
         this.requestProcessor = requestProcessor;
     }
 
-    public BodyContainingRequestBuilder post() {
+    public RequestBuilder post() {
         return createRequestBuilder(new HttpPost());
     }
 
-    public BodyContainingRequestBuilder put() {
+    public RequestBuilder put() {
         return createRequestBuilder(new HttpPut());
     }
 
-    public BodyContainingRequestBuilder patch() {
+    public RequestBuilder patch() {
         return createRequestBuilder(new HttpPatch());
     }
 
@@ -75,7 +74,7 @@ public class HttpComponentsRequestFactory implements RequestFactory {
         return createRequestBuilder(new HttpOptions());
     }
 
-    private HttpComponentsRequestBuilder createRequestBuilder(HttpRequestBase request) {
+    private RequestBuilder createRequestBuilder(HttpRequestBase request) {
         HttpComponentsRequestBuilder requestBuilder = doCreateRequestBuilder(request);
         preprocessRequest(requestBuilder);
         return requestBuilder;
