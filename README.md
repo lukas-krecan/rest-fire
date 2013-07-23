@@ -25,7 +25,7 @@ Basic usage
     
     @Test
     public void testLocalResource() {
-        fire().post().withPath("/test").withBody("bla bla")
+        fire().post().to("/test").withBody("bla bla")
             .expectResponse().havingStatusEqualTo(200).havingBody(startsWith("X"));
     }
     
