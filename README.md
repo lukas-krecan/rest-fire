@@ -45,19 +45,19 @@ Combo setting
 -------------
 Usually you want to set some default setting. It's possible to do it in the following way
 
-        @Test
-        public void testCombo() {
-            fire().post().with(defaultSettings()).expectResponse().havingStatusEqualTo(200);
-        }
+    @Test
+    public void testCombo() {
+        fire().post().with(defaultSettings()).expectResponse().havingStatusEqualTo(200);
+    }
 
-        private RequestProcessor defaultSettings() {
-            return new RequestProcessor() {
-                @Override
-                public void processRequest(RequestBuilder requestBuilder) {
-                    requestBuilder.withPath("/test").withHeader("Header", "value");
-                }
-            };
-        }
+    private RequestProcessor defaultSettings() {
+        return new RequestProcessor() {
+            @Override
+            public void processRequest(RequestBuilder requestBuilder) {
+                requestBuilder.withPath("/test").withHeader("Header", "value");
+            }
+        };
+    }
 
 Advanced configuration
 ----------------------
@@ -90,31 +90,31 @@ JSON comparison
 REST fire does not support JSON comparison, but you can use [JsonUnit](https://github.com/lukas-krecan/JsonUnit) in
 the following way (you just have to add the dependency)
 
-        //compare the whole document, ignore part of it
-        fire().get().to("/path").expectResponse().havingBody(jsonEquals("{\n" +
-                "   \"employees\":[\n" +
-                "      {\n" +
-                "         \"firstName\":\"John\",\n" +
-                "         \"lastName\":\"Doe\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "         \"firstName\":\"Anna\",\n" +
-                "         \"lastName\":\"Smith\"\n" +
-                "      },\n" +
-                "      \"${json-unit.ignore}\"\n" +
-                "   ]\n" +
-                "}"));
+    // Compare the whole document, ignore part of it
+    fire().get().to("/path").expectResponse().havingBody(jsonEquals("{\n" +
+            "   \"employees\":[\n" +
+            "      {\n" +
+            "         \"firstName\":\"John\",\n" +
+            "         \"lastName\":\"Doe\"\n" +
+            "      },\n" +
+            "      {\n" +
+            "         \"firstName\":\"Anna\",\n" +
+            "         \"lastName\":\"Smith\"\n" +
+            "      },\n" +
+            "      \"${json-unit.ignore}\"\n" +
+            "   ]\n" +
+            "}"));
 
 
-        ///Compare just one element
-        fire().get().to("/path").expectResponse().havingBody(jsonPartEquals("employees[1].firstName", "\"Anna\""));
+    // Compare just one element
+    fire().get().to("/path").expectResponse().havingBody(jsonPartEquals("employees[1].firstName", "\"Anna\""));
 
-        ///Compare part of the document
-        fire().get().to("/path").expectResponse().havingBody(jsonPartEquals("employees[1]",
-                        "      {" +
-                        "         \"firstName\":\"Anna\"," +
-                        "         \"lastName\":\"Smith\"" +
-                        "      }"));
+    // Compare part of the document
+    fire().get().to("/path").expectResponse().havingBody(jsonPartEquals("employees[1]",
+                    "      {" +
+                    "         \"firstName\":\"Anna\"," +
+                    "         \"lastName\":\"Smith\"" +
+                    "      }"));
 
 
 Maven dependency
