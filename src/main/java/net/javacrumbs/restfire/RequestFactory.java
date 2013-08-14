@@ -68,4 +68,11 @@ public interface RequestFactory {
      */
     RequestBuilder options();
 
+    /**
+     * Creates TRACE request.
+     *
+     * @return
+     */
+    RequestBuilder trace();
+
 }

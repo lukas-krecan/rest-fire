@@ -179,6 +179,11 @@ public class RestTest {
     }
 
     @Test
+    public void testTrace() {
+        doSimpleTest("TRACE", fire().trace());
+    }
+
+    @Test
     public void testHead() {
         doSimpleTest("HEAD", fire().head());
     }

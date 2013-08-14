@@ -27,6 +27,7 @@ import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpTrace;
 
 /**
  * Apache HTTP client 4 based request factory. Use this directly class for advanced usage and special HttpClient
@@ -72,6 +73,10 @@ public class HttpComponentsRequestFactory implements RequestFactory {
 
     public RequestBuilder options() {
         return createRequestBuilder(new HttpOptions());
+    }
+
+    public RequestBuilder trace() {
+        return createRequestBuilder(new HttpTrace());
     }
 
     private RequestBuilder createRequestBuilder(HttpRequestBase request) {
