@@ -115,6 +115,14 @@ public interface RequestBuilder  {
     RequestBuilder withBody(String body);
 
     /**
+     * Sets request body.
+     *
+     * @param body
+     * @return
+     */
+    RequestBuilder withBody(byte[] body);
+
+    /**
      * Advanced configuration. RequestProcess can set multiple parameters at once.
      * @param requestProcessor
      * @return

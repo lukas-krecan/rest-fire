@@ -17,14 +17,18 @@ package net.javacrumbs.restfire.httpcomponents;
 
 import net.javacrumbs.restfire.ResponseValidator;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ContentType;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,15 +40,19 @@ import static org.hamcrest.CoreMatchers.is;
  */
 public class HttpComponentsResponseValidator implements ResponseValidator {
     private final HttpResponse response;
-    private final String responseBody;
+    private final byte[] responseBody;
+    private final Charset charset;
 
     public HttpComponentsResponseValidator(HttpClient httpClient, HttpRequestBase method) {
         try {
             this.response = httpClient.execute(method);
-            if (response.getEntity()!=null) {
-                responseBody = EntityUtils.toString(response.getEntity());
+            HttpEntity responseEntity = response.getEntity();
+            if (responseEntity !=null) {
+                responseBody = EntityUtils.toByteArray(responseEntity);
+                charset = getCharset(responseEntity);
             } else {
                 responseBody = null;
+                charset = null;
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Can not execute method", e);
@@ -69,6 +77,11 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
     }
 
     public ResponseValidator havingBody(Matcher<String> bodyMatcher) {
+        MatcherAssert.assertThat("Expected different body", new String(responseBody, charset), bodyMatcher);
+        return this;
+    }
+
+    public ResponseValidator havingRawBody(Matcher<byte[]> bodyMatcher) {
         MatcherAssert.assertThat("Expected different body", responseBody, bodyMatcher);
         return this;
     }
@@ -93,5 +106,17 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
             headerValues.add(header.getValue());
         }
         return headerValues;
+    }
+
+    private Charset getCharset(HttpEntity entity) {
+        Charset charset = null;
+        ContentType contentType = ContentType.get(entity);
+        if (contentType != null) {
+            charset = contentType.getCharset();
+        }
+        if (charset == null) {
+            charset = HTTP.DEF_CONTENT_CHARSET;
+        }
+        return charset;
     }
 }

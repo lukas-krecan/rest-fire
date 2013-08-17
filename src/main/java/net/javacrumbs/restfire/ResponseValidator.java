@@ -52,6 +52,12 @@ public interface ResponseValidator {
     ResponseValidator havingBody(Matcher<String> bodyMatcher);
 
     /**
+     * Compares response body as byte array
+     * @return
+     */
+    ResponseValidator havingRawBody(Matcher<byte[]> bodyMatcher);
+
+    /**
      * Checks if there is a header with given value.
      * @param name
      * @param value

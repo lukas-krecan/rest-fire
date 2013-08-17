@@ -19,11 +19,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
+
+import static java.util.Arrays.asList;
 import static net.jadler.Jadler.closeJadler;
 import static net.jadler.Jadler.initJadler;
 import static net.jadler.Jadler.onRequest;
 import static net.jadler.Jadler.port;
 import static net.javacrumbs.restfire.RestFire.fire;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -65,14 +69,14 @@ public class RestTest {
 
     @Test
     public void testCombo() {
-        onRequest().havingURIEqualTo("/test").havingHeaderEqualTo("Header", "value").respond().withStatus(200);
+        onRequest().havingPathEqualTo("/test").havingHeaderEqualTo("Header", "value").respond().withStatus(200);
 
         fire().post().with(defaultSettings()).expectResponse().havingStatusEqualTo(200);
     }
 
     @Test
     public void testToParams() {
-        onRequest().havingURIEqualTo("/test").havingParameterEqualTo("param1","value1").respond().withStatus(200);
+        onRequest().havingPathEqualTo("/test").havingParameterEqualTo("param1", "value1").respond().withStatus(200);
 
         fire().post().to("/test?param1=value1").expectResponse().havingStatusEqualTo(200);
     }
@@ -88,7 +92,7 @@ public class RestTest {
 
     @Test
     public void testPostDifferentCode() {
-        onRequest().havingURIEqualTo("/test").havingBodyEqualTo("bla bla").respond().withBody("Ble ble").withStatus(200);
+        onRequest().havingPathEqualTo("/test").havingBodyEqualTo("bla bla").respond().withBody("Ble ble").withStatus(200);
         try {
             fire().post().withPath("/test").withBody("bla bla").expectResponse().havingStatusEqualTo(201);
             fail("Error expected");
@@ -103,7 +107,7 @@ public class RestTest {
 
     @Test
     public void testPostDifferentBody() {
-        onRequest().havingURIEqualTo("/test").havingBodyEqualTo("bla bla").respond().withBody("Ble ble").withStatus(200);
+        onRequest().havingPathEqualTo("/test").havingBodyEqualTo("bla bla").respond().withBody("Ble ble").withStatus(200);
         try {
             fire().post().withPath("/test").withBody("bla bla").expectResponse().havingStatusEqualTo(200).havingBodyEqualTo("Ble ble2");
             fail("Error expected");
@@ -118,7 +122,7 @@ public class RestTest {
 
     @Test
     public void testPostDifferentBodyPrefix() {
-        onRequest().havingURIEqualTo("/test").havingBodyEqualTo("bla bla").respond().withBody("Ble ble").withStatus(200);
+        onRequest().havingPathEqualTo("/test").havingBodyEqualTo("bla bla").respond().withBody("Ble ble").withStatus(200);
         try {
             fire().post().withPath("/test").withBody("bla bla").expectResponse().havingStatusEqualTo(200).havingBody(startsWith("X"));
             fail("Error expected");
@@ -133,7 +137,7 @@ public class RestTest {
 
     @Test
     public void testPostDifferentHeader() {
-        onRequest().havingURIEqualTo("/test").havingBodyEqualTo("bla bla")
+        onRequest().havingPathEqualTo("/test").havingBodyEqualTo("bla bla")
                 .respond().withBody("Ble ble").withStatus(200).withHeader("Content-Type", "text/plain");
         try {
             fire().post().withPath("/test").withBody("bla bla").expectResponse().havingHeaderEqualTo("content-type", "text/html");
@@ -148,8 +152,27 @@ public class RestTest {
     }
 
     @Test
+    public void testMultipleHeaders() {
+        onRequest().havingPathEqualTo("/test").havingHeader("header", equalTo(asList("one", "two"))).respond().withHeader("header", "three").withHeader("header", "four").withStatus(200);
+        fire().post().withPath("/test").withHeader("header", "one").withHeader("header", "two").expectResponse().havingStatusEqualTo(200).havingHeader("header", equalTo(asList("three", "four")));
+    }
+
+    @Test
+    public void testPostStreamBody() {
+        onRequest().havingPathEqualTo("/test").havingRawBodyEqualTo(new byte[]{1, 2, 3}).respond().withBody(new byte[]{4, 5, 6}).withStatus(200);
+        fire().post().withPath("/test").withBody(new byte[]{1, 2, 3}).expectResponse().havingStatusEqualTo(200).havingRawBody(equalTo(new byte[]{4, 5, 6}));
+    }
+
+    @Test
+    public void testPostEncoding() {
+        onRequest().havingPathEqualTo("/test").havingBodyEqualTo("Příliš žluťoučký kůň").respond().withContentType("text/plain; charset=CP1250").withEncoding(Charset.forName("CP1250")).withBody("Úpěl ďábelské ódy.").withStatus(200);
+        fire().post().withPath("/test").withHeader("Content-Type", "text/plain; charset=ISO-8859-2").withBody("Příliš žluťoučký kůň")
+                .expectResponse().havingStatusEqualTo(200).havingBodyEqualTo("Úpěl ďábelské ódy.");
+    }
+
+    @Test
     public void testPostNoHeader() {
-        onRequest().havingURIEqualTo("/test").havingBodyEqualTo("bla bla")
+        onRequest().havingPathEqualTo("/test").havingBodyEqualTo("bla bla")
                 .respond().withStatus(200);
         try {
             fire().post().withPath("/test").withBody("bla bla").expectResponse().havingHeaderEqualTo("content-type", "text/html");
@@ -191,7 +214,7 @@ public class RestTest {
     public void doSimpleTest(String method, RequestBuilder fireRequest) {
         onRequest()
                 .havingMethodEqualTo(method)
-                .havingURIEqualTo("/test")
+                .havingPathEqualTo("/test")
                 .havingHeaderEqualTo("Accept", "text/plain")
                 .havingParameterEqualTo("param1", "paramValue")
                 .respond().withStatus(200).withHeader("Content-Type", "text/plain");
@@ -208,7 +231,7 @@ public class RestTest {
     public void doSimpleTestWithRequestBody(String method, RequestBuilder fireRequest) {
         onRequest()
                 .havingMethodEqualTo(method)
-                .havingURIEqualTo("/test")
+                .havingPathEqualTo("/test")
                 .havingHeaderEqualTo("Accept", "text/plain")
                 .havingParameterEqualTo("param1", "paramValue")
                 .havingBodyEqualTo("Request body")

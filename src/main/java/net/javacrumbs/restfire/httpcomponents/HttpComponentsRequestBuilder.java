@@ -18,13 +18,16 @@ package net.javacrumbs.restfire.httpcomponents;
 import net.javacrumbs.restfire.RequestBuilder;
 import net.javacrumbs.restfire.RequestProcessor;
 import net.javacrumbs.restfire.ResponseValidator;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -43,16 +46,30 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
     }
 
     public RequestBuilder withBody(String body) {
+        setBody(new StringEntity(body, getContentType()));
+        return this;
+    }
+
+    private ContentType getContentType() {
+        Header contentTypeHeader = request.getFirstHeader("Content-Type");
+        if (contentTypeHeader!=null) {
+            return ContentType.parse(contentTypeHeader.getValue());
+        } else {
+            return null;
+        }
+    }
+
+    public RequestBuilder withBody(byte[] body) {
+        setBody(new ByteArrayEntity(body));
+        return this;
+    }
+
+    private void setBody(HttpEntity entity) {
         if (request instanceof HttpEntityEnclosingRequestBase) {
-            try {
-                ((HttpEntityEnclosingRequestBase) request).setEntity(new StringEntity(body));
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalArgumentException("Can not request body entity", e);
-            }
+           ((HttpEntityEnclosingRequestBase) request).setEntity(entity);
         } else {
             throw new IllegalStateException("Can not set body for request of type " + request);
         }
-        return this;
     }
 
     public RequestBuilder to(String address) {
@@ -133,7 +150,7 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
 
     /**
      * Creates response validator.
-     * @return
+     * @return response validator
      */
     protected HttpComponentsResponseValidator doCreateResponseValidator() {
         return new HttpComponentsResponseValidator(httpClient, request);

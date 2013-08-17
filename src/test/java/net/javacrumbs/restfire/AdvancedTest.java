@@ -53,7 +53,7 @@ public class AdvancedTest {
     public void testPost() {
         onRequest()
                 .havingMethodEqualTo("POST")
-                .havingURIEqualTo("/test")
+                .havingPathEqualTo("/test")
                 .havingHeaderEqualTo("Accept", "text/plain")
                 .havingParameterEqualTo("param1", "paramValue")
                 .havingBodyEqualTo("Request body")
