@@ -28,8 +28,7 @@ public class SampleTest {
     @Test
     public void testSearch() {
         fire().get()
-                .to("https://www.google.com/search")
-                .withQueryParameter("q", "rest-fire")
+                .to("https://www.google.com/search?q=rest-fire")
                 .withHeader("Accept", "text/html")
         .expectResponse()
                 .havingStatusEqualTo(200)

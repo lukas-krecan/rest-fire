@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Arrays.asList;
 import static net.jadler.Jadler.closeJadler;
@@ -29,7 +30,9 @@ import static net.jadler.Jadler.port;
 import static net.javacrumbs.restfire.RestFire.fire;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class RestTest {
@@ -187,6 +190,17 @@ public class RestTest {
     }
 
     @Test
+    public void testTooSlow() {
+        onRequest().havingPathEqualTo("/test").respond().withDelay(10, TimeUnit.MILLISECONDS);
+        try {
+            fire().post().withPath("/test").expectResponse().havingResponseTimeInMillis(lessThan(1));
+            fail("Error expected");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), startsWith("Unexpected response time\nExpected: a value less than <1>"));
+        }
+    }
+
+    @Test
     public void testGet() {
         doSimpleTest("GET", fire().get());
     }
@@ -225,7 +239,8 @@ public class RestTest {
                 .withQueryParameter("param1", "paramValue")
                 .expectResponse()
                 .havingStatusEqualTo(200)
-                .havingHeaderEqualTo("Content-type", "text/plain");
+                .havingHeaderEqualTo("Content-type", "text/plain")
+                .havingResponseTimeInMillis(lessThan(100));
     }
 
     public void doSimpleTestWithRequestBody(String method, RequestBuilder fireRequest) {

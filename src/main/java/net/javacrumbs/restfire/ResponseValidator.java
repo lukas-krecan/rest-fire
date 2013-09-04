@@ -72,4 +72,9 @@ public interface ResponseValidator {
      * @return
      */
     ResponseValidator havingHeader(final String name, final Matcher<? super List<String>> matcher);
+
+    /**
+     * Checks response time.
+     */
+    ResponseValidator havingResponseTimeInMillis(final Matcher<Integer> matcher);
 }

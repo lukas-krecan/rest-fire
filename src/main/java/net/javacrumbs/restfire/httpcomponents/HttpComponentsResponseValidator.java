@@ -42,10 +42,15 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
     private final HttpResponse response;
     private final byte[] responseBody;
     private final Charset charset;
+    private final int duration;
 
     public HttpComponentsResponseValidator(HttpClient httpClient, HttpRequestBase method) {
         try {
+            long executionStart = System.currentTimeMillis();
             this.response = httpClient.execute(method);
+            //let's hope that the request took less than 4 years. This will overflow otherwise.
+            duration = (int)(System.currentTimeMillis() - executionStart);
+
             HttpEntity responseEntity = response.getEntity();
             if (responseEntity !=null) {
                 responseBody = EntityUtils.toByteArray(responseEntity);
@@ -93,6 +98,11 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
 
     public ResponseValidator havingHeader(String name, Matcher<? super List<String>> headerMatcher) {
         MatcherAssert.assertThat("Expected different header '"+name+"'", getHeaderValues(name), headerMatcher);
+        return this;
+    }
+
+    public ResponseValidator havingResponseTimeInMillis(Matcher<Integer> matcher) {
+        MatcherAssert.assertThat("Unexpected response time", duration, matcher);
         return this;
     }
 
