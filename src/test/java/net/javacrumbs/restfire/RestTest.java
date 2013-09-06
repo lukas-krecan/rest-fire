@@ -27,6 +27,7 @@ import static net.jadler.Jadler.closeJadler;
 import static net.jadler.Jadler.initJadler;
 import static net.jadler.Jadler.onRequest;
 import static net.jadler.Jadler.port;
+import static net.jadler.Jadler.verifyThatRequest;
 import static net.javacrumbs.restfire.RestFire.fire;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -157,7 +158,7 @@ public class RestTest {
     @Test
     public void testMultipleHeaders() {
         onRequest().havingPathEqualTo("/test").havingHeader("header", equalTo(asList("one", "two"))).respond().withHeader("header", "three").withHeader("header", "four").withStatus(200);
-        fire().post().withPath("/test").withHeader("header", "one").withHeader("header", "two").expectResponse().havingStatusEqualTo(200).havingHeader("header", equalTo(asList("three", "four")));
+        fire().post().withPath("/test").withHeaders("header", "one", "two").expectResponse().havingStatusEqualTo(200).havingHeader("header", equalTo(asList("three", "four")));
     }
 
     @Test
@@ -187,6 +188,15 @@ public class RestTest {
                             "     but: was null",
                     e.getMessage());
         }
+    }
+
+    @Test
+    public void testCookie() {
+        onRequest().havingPathEqualTo("/root/test").respond().withStatus(200);
+
+        fire().get().withPath("/root/test").withHeader("Cookie", "Name=value").expectResponse();
+
+        verifyThatRequest().havingHeaderEqualTo("Cookie", "Name=value").receivedOnce();
     }
 
     @Test

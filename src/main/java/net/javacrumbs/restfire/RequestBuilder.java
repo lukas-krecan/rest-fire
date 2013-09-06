@@ -41,12 +41,20 @@ public interface RequestBuilder  {
     RequestBuilder to(URI address);
 
     /**
-     * Adds request header.
+     * Sets request header.
      * @param name
      * @param value
      * @return
      */
     RequestBuilder withHeader(String name, String value);
+
+    /**
+    * Sets request header with multiple values
+    * @param name
+    * @param values
+    * @return
+    */
+    RequestBuilder withHeaders(String name, String... values);
 
     /**
      * Adds query parameter.

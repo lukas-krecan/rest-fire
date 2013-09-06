@@ -27,6 +27,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -52,7 +53,7 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
 
     private ContentType getContentType() {
         Header contentTypeHeader = request.getFirstHeader("Content-Type");
-        if (contentTypeHeader!=null) {
+        if (contentTypeHeader != null) {
             return ContentType.parse(contentTypeHeader.getValue());
         } else {
             return null;
@@ -66,7 +67,7 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
 
     private void setBody(HttpEntity entity) {
         if (request instanceof HttpEntityEnclosingRequestBase) {
-           ((HttpEntityEnclosingRequestBase) request).setEntity(entity);
+            ((HttpEntityEnclosingRequestBase) request).setEntity(entity);
         } else {
             throw new IllegalStateException("Can not set body for request of type " + request);
         }
@@ -82,7 +83,16 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
     }
 
     public RequestBuilder withHeader(String name, String value) {
-        request.addHeader(name, value);
+        request.setHeader(name, value);
+        return this;
+    }
+
+    public RequestBuilder withHeaders(String name, String... values) {
+        Header[] headers = new Header[values.length];
+        for (int i=0; i<values.length; i++) {
+            headers[i] = new BasicHeader(name, values[i]);
+        }
+        request.setHeaders(headers);
         return this;
     }
 
@@ -143,16 +153,30 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
         }
     }
 
-    //for test
-    URIBuilder getUriBuilder() {
-        return uriBuilder;
-    }
-
     /**
      * Creates response validator.
+     *
      * @return response validator
      */
     protected HttpComponentsResponseValidator doCreateResponseValidator() {
         return new HttpComponentsResponseValidator(httpClient, request);
     }
+
+    //for test
+    URIBuilder getUriBuilder() {
+        return uriBuilder;
+    }
+
+    //for test
+    HttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    //for test
+    HttpRequestBase getRequest() {
+        return request;
+    }
+
+
+
 }

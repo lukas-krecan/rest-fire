@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.restfire.httpcomponents;
 
+import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -90,5 +91,40 @@ public class HttpComponentsRequestBuilderTest {
         requestBuilder.to("http://example.com/blue%2Fred%3Fand+green");
 
         assertEquals(URI.create("http://example.com/blue%2Fred%3Fand+green"), requestBuilder.getUriBuilder().build());
+    }
+
+    @Test
+    public void testSetHeaderOverwrite() {
+        requestBuilder.withHeader("test", "value1").withHeader("test", "value2");
+        Header[] headers = requestBuilder.getRequest().getHeaders("test");
+        assertEquals(1, headers.length);
+        assertEquals("value2", headers[0].getValue());
+    }
+
+    @Test
+    public void testSetHeadersNone() {
+        requestBuilder.withHeader("test", "value0");
+
+        requestBuilder.withHeaders("test");
+        Header[] headers = requestBuilder.getRequest().getHeaders("test");
+        assertEquals(0, headers.length);
+    }
+
+
+    @Test
+    public void testSetHeadersOne() {
+        requestBuilder.withHeaders("test", "value1");
+        Header[] headers = requestBuilder.getRequest().getHeaders("test");
+        assertEquals(1, headers.length);
+        assertEquals("value1", headers[0].getValue());
+    }
+
+    @Test
+    public void testSetHeadersTwo() {
+        requestBuilder.withHeaders("test", "value1", "value2");
+        Header[] headers = requestBuilder.getRequest().getHeaders("test");
+        assertEquals(2, headers.length);
+        assertEquals("value1", headers[0].getValue());
+        assertEquals("value2", headers[1].getValue());
     }
 }
