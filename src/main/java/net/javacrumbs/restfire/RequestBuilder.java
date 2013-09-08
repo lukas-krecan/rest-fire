@@ -49,7 +49,7 @@ public interface RequestBuilder  {
     RequestBuilder withHeader(String name, String value);
 
     /**
-    * Sets request header with multiple values
+    * Sets request header with multiple values. If no value specified, removes the header.
     * @param name
     * @param values
     * @return
@@ -57,12 +57,21 @@ public interface RequestBuilder  {
     RequestBuilder withHeaders(String name, String... values);
 
     /**
-     * Adds query parameter.
+     * Sets query parameter.
      * @param name
      * @param value
      * @return
      */
     RequestBuilder withQueryParameter(String name, String value);
+
+    /**
+     * Sets query parameters. If no parameter specified, removes the parameter.
+     * @param name
+     * @param values
+     * @return
+     */
+    RequestBuilder withQueryParameters(String name, String... values);
+
 
     /**
      * Sets URI path for the request.

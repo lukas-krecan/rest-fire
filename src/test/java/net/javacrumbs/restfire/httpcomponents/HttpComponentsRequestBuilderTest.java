@@ -127,4 +127,37 @@ public class HttpComponentsRequestBuilderTest {
         assertEquals("value1", headers[0].getValue());
         assertEquals("value2", headers[1].getValue());
     }
+
+    @Test
+    public void testSetParameterRewrite() throws URISyntaxException {
+        requestBuilder.withQueryParameter("test", "value0");
+        requestBuilder.withQueryParameter("test", "value1");
+        assertEquals("http://localhost:8080?test=value1", requestBuilder.getUriBuilder().build().toString());
+    }
+
+    @Test
+    public void testSetParametersNone() throws URISyntaxException {
+        requestBuilder.withQueryParameter("doNotTouch", "1");
+        requestBuilder.withQueryParameter("test", "value0");
+
+        requestBuilder.withQueryParameters("test");
+        assertEquals("http://localhost:8080?doNotTouch=1", requestBuilder.getUriBuilder().build().toString());
+    }
+
+    @Test
+    public void testSetParametersOne() throws URISyntaxException {
+        requestBuilder.withQueryParameter("doNotTouch", "1");
+        requestBuilder.withQueryParameters("test", "value0");
+
+        assertEquals("http://localhost:8080?doNotTouch=1&test=value0", requestBuilder.getUriBuilder().build().toString());
+    }
+
+    @Test
+    public void testSetParametersTwo() throws URISyntaxException {
+        requestBuilder.withQueryParameter("doNotTouch", "1");
+        requestBuilder.withQueryParameter("test", "value0");
+        requestBuilder.withQueryParameters("test", "value1", "value2");
+
+        assertEquals("http://localhost:8080?doNotTouch=1&test=value1&test=value2", requestBuilder.getUriBuilder().build().toString());
+    }
 }

@@ -20,6 +20,7 @@ import net.javacrumbs.restfire.RequestProcessor;
 import net.javacrumbs.restfire.ResponseValidator;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -31,6 +32,7 @@ import org.apache.http.message.BasicHeader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * Configures {@link HttpClient}.
@@ -97,8 +99,32 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
     }
 
     public RequestBuilder withQueryParameter(String name, String value) {
-        uriBuilder.addParameter(name, value);
+        uriBuilder.setParameter(name, value);
         return this;
+    }
+
+    public RequestBuilder withQueryParameters(String name, String... values) {
+        if (values.length==0) {
+            removeParameter(name);
+        } else {
+            //set the first one and rewrite previous values
+            uriBuilder.setParameter(name, values[0]);
+            //add additional values
+            for (int i=1; i<values.length; i++) {
+                uriBuilder.addParameter(name, values[i]);
+            }
+        }
+        return this;
+    }
+
+    private void removeParameter(String name) {
+        List<NameValuePair> queryParams = uriBuilder.getQueryParams();
+        uriBuilder.removeQuery();
+        for (NameValuePair nvp: queryParams) {
+            if (!nvp.getName().equals(name)) {
+                uriBuilder.addParameter(nvp.getName(), nvp.getValue());
+            }
+        }
     }
 
     public RequestBuilder withPath(String path) {
@@ -165,11 +191,6 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
     //for test
     URIBuilder getUriBuilder() {
         return uriBuilder;
-    }
-
-    //for test
-    HttpClient getHttpClient() {
-        return httpClient;
     }
 
     //for test
