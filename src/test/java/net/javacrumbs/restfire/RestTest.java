@@ -31,6 +31,7 @@ import static net.jadler.Jadler.verifyThatRequest;
 import static net.javacrumbs.restfire.RestFire.fire;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -250,7 +251,8 @@ public class RestTest {
                 .expectResponse()
                 .havingStatusEqualTo(200)
                 .havingHeaderEqualTo("Content-type", "text/plain")
-                .havingResponseTimeInMillis(lessThan(100));
+                .havingResponseTimeInMillis(lessThan(100))
+                .havingBody(is(""));
     }
 
     public void doSimpleTestWithRequestBody(String method, RequestBuilder fireRequest) {

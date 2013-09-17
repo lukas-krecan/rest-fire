@@ -82,7 +82,8 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
     }
 
     public ResponseValidator havingBody(Matcher<String> bodyMatcher) {
-        MatcherAssert.assertThat("Expected different body", new String(responseBody, charset), bodyMatcher);
+        String response = responseBody != null ? new String(responseBody, charset) : "";
+        MatcherAssert.assertThat("Expected different body", response, bodyMatcher);
         return this;
     }
 

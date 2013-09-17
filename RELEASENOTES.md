@@ -1,3 +1,6 @@
+## 0.0.9
+* Better handling of nulls in response validation
+
 ## 0.0.8
 * Fixed setHeaders function
 
