@@ -121,11 +121,14 @@ public class HttpComponentsRequestBuilderTest {
 
     @Test
     public void testSetHeadersTwo() {
+        requestBuilder.withHeader("first", "value");
+        requestBuilder.withHeader("test", "valueXX");
         requestBuilder.withHeaders("test", "value1", "value2");
         Header[] headers = requestBuilder.getRequest().getHeaders("test");
         assertEquals(2, headers.length);
         assertEquals("value1", headers[0].getValue());
         assertEquals("value2", headers[1].getValue());
+        assertEquals("value", requestBuilder.getRequest().getFirstHeader("first").getValue());
     }
 
     @Test

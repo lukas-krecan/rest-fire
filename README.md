@@ -122,7 +122,7 @@ Maven dependency
     <dependency>
       <groupId>net.javacrumbs.rest-fire</groupId>
       <artifactId>rest-fire</artifactId>
-      <version>0.0.6</version>
+      <version>0.0.8</version>
       <scope>test</scope>
     </dependency>
 

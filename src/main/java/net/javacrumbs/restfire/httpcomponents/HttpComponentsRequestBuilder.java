@@ -28,7 +28,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -90,11 +89,10 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
     }
 
     public RequestBuilder withHeaders(String name, String... values) {
-        Header[] headers = new Header[values.length];
-        for (int i=0; i<values.length; i++) {
-            headers[i] = new BasicHeader(name, values[i]);
+        request.removeHeaders(name);
+        for (String value : values) {
+            request.addHeader(name, value);
         }
-        request.setHeaders(headers);
         return this;
     }
 
