@@ -22,40 +22,40 @@ import java.util.List;
 /**
  * Validates the response
  */
-public interface ResponseValidator {
+public interface ResponseValidator<V extends ResponseValidator<V>> {
     /**
      * Checks the response status.
      * @param status
      * @return
      */
-    ResponseValidator havingStatusEqualTo(int status);
+    V havingStatusEqualTo(int status);
 
     /**
      * Checks the response status.
      * @param statusMatcher
      * @return
      */
-    ResponseValidator havingStatus(Matcher<Integer> statusMatcher);
+    V havingStatus(Matcher<Integer> statusMatcher);
 
     /**
      * Compares response body
      * @param body
      * @return
      */
-    ResponseValidator havingBodyEqualTo(String body);
+    V havingBodyEqualTo(String body);
 
     /**
      * Compares response body.
      * @param bodyMatcher
      * @return
      */
-    ResponseValidator havingBody(Matcher<String> bodyMatcher);
+    V havingBody(Matcher<String> bodyMatcher);
 
     /**
      * Compares response body as byte array
      * @return
      */
-    ResponseValidator havingRawBody(Matcher<byte[]> bodyMatcher);
+    V havingRawBody(Matcher<byte[]> bodyMatcher);
 
     /**
      * Checks if there is a header with given value.
@@ -63,7 +63,7 @@ public interface ResponseValidator {
      * @param value
      * @return
      */
-    ResponseValidator havingHeaderEqualTo(String name, String value);
+    V havingHeaderEqualTo(String name, String value);
 
     /**
      * Checks response headers.
@@ -71,10 +71,10 @@ public interface ResponseValidator {
      * @param matcher
      * @return
      */
-    ResponseValidator havingHeader(final String name, final Matcher<? super List<String>> matcher);
+    V havingHeader(final String name, final Matcher<? super List<String>> matcher);
 
     /**
      * Checks response time.
      */
-    ResponseValidator havingResponseTimeInMillis(final Matcher<Integer> matcher);
+    V havingResponseTimeInMillis(final Matcher<Integer> matcher);
 }

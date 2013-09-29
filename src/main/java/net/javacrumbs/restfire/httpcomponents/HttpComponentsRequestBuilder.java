@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Configures {@link HttpClient}.
  */
-public class HttpComponentsRequestBuilder implements RequestBuilder {
+public class HttpComponentsRequestBuilder<B extends RequestBuilder<B, V>, V extends ResponseValidator<V>> implements RequestBuilder<B, V> {
     private final HttpClient httpClient;
     private final HttpRequestBase request;
     private URIBuilder uriBuilder;
@@ -47,9 +47,9 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
         uriBuilder = new URIBuilder(URI.create("http://localhost:8080"));
     }
 
-    public RequestBuilder withBody(String body) {
+    public B withBody(String body) {
         setBody(new StringEntity(body, getContentType()));
-        return this;
+        return (B)this;
     }
 
     private ContentType getContentType() {
@@ -61,9 +61,9 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
         }
     }
 
-    public RequestBuilder withBody(byte[] body) {
+    public B withBody(byte[] body) {
         setBody(new ByteArrayEntity(body));
-        return this;
+        return (B)this;
     }
 
     private void setBody(HttpEntity entity) {
@@ -74,34 +74,34 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
         }
     }
 
-    public RequestBuilder to(String address) {
+    public B to(String address) {
         return to(URI.create(address));
     }
 
-    public RequestBuilder to(URI address) {
+    public B to(URI address) {
         uriBuilder = new URIBuilder(buildUri().resolve(address));
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withHeader(String name, String value) {
+    public B withHeader(String name, String value) {
         request.setHeader(name, value);
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withHeaders(String name, String... values) {
+    public B withHeaders(String name, String... values) {
         request.removeHeaders(name);
         for (String value : values) {
             request.addHeader(name, value);
         }
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withQueryParameter(String name, String value) {
+    public B withQueryParameter(String name, String value) {
         uriBuilder.setParameter(name, value);
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withQueryParameters(String name, String... values) {
+    public B withQueryParameters(String name, String... values) {
         if (values.length==0) {
             removeParameter(name);
         } else {
@@ -112,7 +112,7 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
                 uriBuilder.addParameter(name, values[i]);
             }
         }
-        return this;
+        return (B)this;
     }
 
     private void removeParameter(String name) {
@@ -125,48 +125,48 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
         }
     }
 
-    public RequestBuilder withPath(String path) {
+    public B withPath(String path) {
         uriBuilder.setPath(path);
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withPort(int port) {
+    public B withPort(int port) {
         uriBuilder.setPort(port);
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withHost(String host) {
+    public B withHost(String host) {
         uriBuilder.setHost(host);
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withScheme(String scheme) {
+    public B withScheme(String scheme) {
         uriBuilder.setScheme(scheme);
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withFragment(String fragment) {
+    public B withFragment(String fragment) {
         uriBuilder.setFragment(fragment);
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withUri(URI uri) {
+    public B withUri(URI uri) {
         uriBuilder = new URIBuilder(uri);
-        return this;
+        return (B)this;
     }
 
-    public RequestBuilder withUri(String uri) {
+    public B withUri(String uri) {
         return withUri(URI.create(uri));
     }
 
-    public RequestBuilder with(RequestProcessor requestProcessor) {
+    public B with(RequestProcessor requestProcessor) {
         requestProcessor.processRequest(this);
-        return this;
+        return (B)this;
     }
 
-    public ResponseValidator expectResponse() {
+    public V expectResponse() {
         request.setURI(buildUri());
-        return doCreateResponseValidator();
+        return doCreateResponseValidator(httpClient, request);
     }
 
     private URI buildUri() {
@@ -181,18 +181,18 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
      * Creates response validator.
      *
      * @return response validator
+     * @param httpClient
+     * @param request
      */
-    protected HttpComponentsResponseValidator doCreateResponseValidator() {
-        return new HttpComponentsResponseValidator(httpClient, request);
+    protected V doCreateResponseValidator(HttpClient httpClient, HttpRequestBase request) {
+        return (V)new HttpComponentsResponseValidator(httpClient, request);
     }
 
-    //for test
-    URIBuilder getUriBuilder() {
+    protected URIBuilder getUriBuilder() {
         return uriBuilder;
     }
 
-    //for test
-    HttpRequestBase getRequest() {
+    protected HttpRequestBase getRequest() {
         return request;
     }
 

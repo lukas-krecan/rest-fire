@@ -18,6 +18,7 @@ package net.javacrumbs.restfire.httpcomponents;
 import net.javacrumbs.restfire.RequestBuilder;
 import net.javacrumbs.restfire.RequestFactory;
 import net.javacrumbs.restfire.RequestProcessor;
+import net.javacrumbs.restfire.ResponseValidator;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -33,7 +34,7 @@ import org.apache.http.client.methods.HttpTrace;
  * Apache HTTP client 4 based request factory. Use this directly class for advanced usage and special HttpClient
  * configuration.
  */
-public class HttpComponentsRequestFactory implements RequestFactory {
+public class HttpComponentsRequestFactory<B extends RequestBuilder<B, V>, V extends ResponseValidator<V>> implements RequestFactory<B, V> {
     private final HttpClient httpClient;
     private final RequestProcessor requestProcessor;
 
@@ -47,42 +48,42 @@ public class HttpComponentsRequestFactory implements RequestFactory {
         this.requestProcessor = requestProcessor;
     }
 
-    public RequestBuilder post() {
+    public B post() {
         return createRequestBuilder(new HttpPost());
     }
 
-    public RequestBuilder put() {
+    public B put() {
         return createRequestBuilder(new HttpPut());
     }
 
-    public RequestBuilder patch() {
+    public B patch() {
         return createRequestBuilder(new HttpPatch());
     }
 
-    public RequestBuilder get() {
+    public B get() {
         return createRequestBuilder(new HttpGet());
     }
 
-    public RequestBuilder delete() {
+    public B delete() {
         return createRequestBuilder(new HttpDelete());
     }
 
-    public RequestBuilder head() {
+    public B head() {
         return createRequestBuilder(new HttpHead());
     }
 
-    public RequestBuilder options() {
+    public B options() {
         return createRequestBuilder(new HttpOptions());
     }
 
-    public RequestBuilder trace() {
+    public B trace() {
         return createRequestBuilder(new HttpTrace());
     }
 
-    private RequestBuilder createRequestBuilder(HttpRequestBase request) {
-        HttpComponentsRequestBuilder requestBuilder = doCreateRequestBuilder(request);
+    private B createRequestBuilder(HttpRequestBase request) {
+        HttpComponentsRequestBuilder requestBuilder = doCreateRequestBuilder(httpClient, request);
         preprocessRequest(requestBuilder);
-        return requestBuilder;
+        return (B)requestBuilder;
     }
 
     /**
@@ -98,9 +99,10 @@ public class HttpComponentsRequestFactory implements RequestFactory {
     /**
      * Creates {@link RequestBuilder}.
      * @param request
+     * @param httpClient
      * @return
      */
-    protected HttpComponentsRequestBuilder doCreateRequestBuilder(HttpRequestBase request) {
+    protected HttpComponentsRequestBuilder doCreateRequestBuilder(HttpClient httpClient, HttpRequestBase request) {
         return new HttpComponentsRequestBuilder(httpClient, request);
     }
 }

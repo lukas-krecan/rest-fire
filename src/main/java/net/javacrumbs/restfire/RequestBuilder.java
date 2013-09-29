@@ -19,8 +19,10 @@ import java.net.URI;
 
 /**
  * Interface for configuring the request.
+ *
+ * Types B and V are used to simplify extensions. B stands for RequestBuilder a V for ResponseValidator.
  */
-public interface RequestBuilder  {
+public interface RequestBuilder<B extends RequestBuilder<B, V>, V extends ResponseValidator<V>>  {
 
     /**
      * Sends request to address. Works in a clever way as to not override
@@ -29,7 +31,7 @@ public interface RequestBuilder  {
      * @param address
      * @return
      */
-    RequestBuilder to(String address);
+    B to(String address);
 
     /**
      * Sends request to address. Works in a clever way as to not override
@@ -38,7 +40,7 @@ public interface RequestBuilder  {
      * @param address
      * @return
      */
-    RequestBuilder to(URI address);
+    B to(URI address);
 
     /**
      * Sets request header.
@@ -46,7 +48,7 @@ public interface RequestBuilder  {
      * @param value
      * @return
      */
-    RequestBuilder withHeader(String name, String value);
+    B withHeader(String name, String value);
 
     /**
     * Sets request header with multiple values. If no value specified, removes the header.
@@ -54,7 +56,7 @@ public interface RequestBuilder  {
     * @param values
     * @return
     */
-    RequestBuilder withHeaders(String name, String... values);
+    B withHeaders(String name, String... values);
 
     /**
      * Sets query parameter.
@@ -62,7 +64,7 @@ public interface RequestBuilder  {
      * @param value
      * @return
      */
-    RequestBuilder withQueryParameter(String name, String value);
+    B withQueryParameter(String name, String value);
 
     /**
      * Sets query parameters. If no parameter specified, removes the parameter.
@@ -70,7 +72,7 @@ public interface RequestBuilder  {
      * @param values
      * @return
      */
-    RequestBuilder withQueryParameters(String name, String... values);
+    B withQueryParameters(String name, String... values);
 
 
     /**
@@ -78,35 +80,35 @@ public interface RequestBuilder  {
      * @param uri
      * @return
      */
-    RequestBuilder withPath(String uri);
+    B withPath(String uri);
 
     /**
      * Sets port for the request.
      * @param port
      * @return
      */
-    RequestBuilder withPort(int port);
+    B withPort(int port);
 
     /**
      * Sets port for the request.
      * @param host
      * @return
      */
-    RequestBuilder withHost(String host);
+    B withHost(String host);
 
     /**
      * Sets scheme for the request.
      * @param scheme
      * @return
      */
-    RequestBuilder withScheme(String scheme);
+    B withScheme(String scheme);
 
     /**
      * Sets URI fragment.
      * @param fragment
      * @return
      */
-    RequestBuilder withFragment(String fragment);
+    B withFragment(String fragment);
 
 
     /**
@@ -114,14 +116,14 @@ public interface RequestBuilder  {
      * @param uri
      * @return
      */
-    RequestBuilder withUri(URI uri);
+    B withUri(URI uri);
 
     /**
      * Sets the whole URI for the request. Default value is http://locahost:8080.
      * @param uri
      * @return
      */
-    RequestBuilder withUri(String uri);
+    B withUri(String uri);
 
     /**
      * Sets request body.
@@ -129,7 +131,7 @@ public interface RequestBuilder  {
      * @param body
      * @return
      */
-    RequestBuilder withBody(String body);
+    B withBody(String body);
 
     /**
      * Sets request body.
@@ -137,20 +139,18 @@ public interface RequestBuilder  {
      * @param body
      * @return
      */
-    RequestBuilder withBody(byte[] body);
+    B withBody(byte[] body);
 
     /**
      * Advanced configuration. RequestProcess can set multiple parameters at once.
      * @param requestProcessor
      * @return
      */
-    RequestBuilder with(RequestProcessor requestProcessor);
+    B with(RequestProcessor requestProcessor);
 
     /**
      * Executes request and switches to response validation mode.
      * @return
      */
-    ResponseValidator expectResponse();
-
-
+    V expectResponse();
 }

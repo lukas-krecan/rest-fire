@@ -38,7 +38,7 @@ import static org.hamcrest.CoreMatchers.is;
 /**
  * Validates the response.
  */
-public class HttpComponentsResponseValidator implements ResponseValidator {
+public class HttpComponentsResponseValidator<V extends ResponseValidator<V>> implements ResponseValidator<V> {
     private final HttpResponse response;
     private final byte[] responseBody;
     private final Charset charset;
@@ -66,45 +66,45 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
         }
     }
 
-    public ResponseValidator havingStatusEqualTo(int status) {
+    public V havingStatusEqualTo(int status) {
         havingStatus(is(status));
-        return this;
+        return (V)this;
     }
 
-    public ResponseValidator havingStatus(Matcher<Integer> statusMatcher) {
+    public V havingStatus(Matcher<Integer> statusMatcher) {
         MatcherAssert.assertThat("Expected different status code", response.getStatusLine().getStatusCode(), statusMatcher);
-        return this;
+        return (V)this;
     }
 
-    public ResponseValidator havingBodyEqualTo(String body) {
+    public V havingBodyEqualTo(String body) {
         havingBody(is(body));
-        return this;
+        return (V)this;
     }
 
-    public ResponseValidator havingBody(Matcher<String> bodyMatcher) {
+    public V havingBody(Matcher<String> bodyMatcher) {
         String response = responseBody != null ? new String(responseBody, charset) : "";
         MatcherAssert.assertThat("Expected different body", response, bodyMatcher);
-        return this;
+        return (V)this;
     }
 
-    public ResponseValidator havingRawBody(Matcher<byte[]> bodyMatcher) {
+    public V havingRawBody(Matcher<byte[]> bodyMatcher) {
         MatcherAssert.assertThat("Expected different body", responseBody, bodyMatcher);
-        return this;
+        return (V)this;
     }
 
-    public ResponseValidator havingHeaderEqualTo(String name, String value) {
+    public V havingHeaderEqualTo(String name, String value) {
         havingHeader(name, hasItem(value));
-        return this;
+        return (V)this;
     }
 
-    public ResponseValidator havingHeader(String name, Matcher<? super List<String>> headerMatcher) {
+    public V havingHeader(String name, Matcher<? super List<String>> headerMatcher) {
         MatcherAssert.assertThat("Expected different header '"+name+"'", getHeaderValues(name), headerMatcher);
-        return this;
+        return (V)this;
     }
 
-    public ResponseValidator havingResponseTimeInMillis(Matcher<Integer> matcher) {
+    public V havingResponseTimeInMillis(Matcher<Integer> matcher) {
         MatcherAssert.assertThat("Unexpected response time", duration, matcher);
-        return this;
+        return (V)this;
     }
 
     private List<String> getHeaderValues(String name) {
@@ -119,7 +119,7 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
         return headerValues;
     }
 
-    private Charset getCharset(HttpEntity entity) {
+    private static Charset getCharset(HttpEntity entity) {
         Charset charset = null;
         ContentType contentType = ContentType.get(entity);
         if (contentType != null) {
@@ -129,5 +129,9 @@ public class HttpComponentsResponseValidator implements ResponseValidator {
             charset = HTTP.DEF_CONTENT_CHARSET;
         }
         return charset;
+    }
+
+    protected HttpResponse getResponse() {
+        return response;
     }
 }
