@@ -34,7 +34,7 @@ import org.apache.http.client.methods.HttpTrace;
  * Apache HTTP client 4 based request factory. Use this directly class for advanced usage and special HttpClient
  * configuration.
  */
-public class HttpComponentsRequestFactory<B extends RequestBuilder<B, V>, V extends ResponseValidator<V>> implements RequestFactory<B, V> {
+public class HttpComponentsRequestFactory<B extends RequestBuilder<B>> implements RequestFactory<B> {
     private final HttpClient httpClient;
     private final RequestProcessor requestProcessor;
 

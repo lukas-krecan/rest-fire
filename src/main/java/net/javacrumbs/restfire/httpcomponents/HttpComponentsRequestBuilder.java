@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Configures {@link HttpClient}.
  */
-public class HttpComponentsRequestBuilder<B extends RequestBuilder<B, V>, V extends ResponseValidator<V>> implements RequestBuilder<B, V> {
+public class HttpComponentsRequestBuilder<B extends RequestBuilder<B>> implements RequestBuilder<B> {
     private final HttpClient httpClient;
     private final HttpRequestBase request;
     private URIBuilder uriBuilder;
@@ -164,7 +164,7 @@ public class HttpComponentsRequestBuilder<B extends RequestBuilder<B, V>, V exte
         return (B)this;
     }
 
-    public V expectResponse() {
+    public <V extends ResponseValidator<V>> ResponseValidator<V> expectResponse() {
         request.setURI(buildUri());
         return doCreateResponseValidator(httpClient, request);
     }
@@ -184,8 +184,8 @@ public class HttpComponentsRequestBuilder<B extends RequestBuilder<B, V>, V exte
      * @param httpClient
      * @param request
      */
-    protected V doCreateResponseValidator(HttpClient httpClient, HttpRequestBase request) {
-        return (V)new HttpComponentsResponseValidator(httpClient, request);
+    protected ResponseValidator doCreateResponseValidator(HttpClient httpClient, HttpRequestBase request) {
+        return new HttpComponentsResponseValidator(httpClient, request);
     }
 
     protected URIBuilder getUriBuilder() {

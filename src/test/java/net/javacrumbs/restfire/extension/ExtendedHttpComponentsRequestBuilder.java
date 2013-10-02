@@ -15,18 +15,22 @@
  */
 package net.javacrumbs.restfire.extension;
 
+import net.javacrumbs.restfire.ResponseValidator;
 import net.javacrumbs.restfire.httpcomponents.HttpComponentsRequestBuilder;
-import net.javacrumbs.restfire.httpcomponents.HttpComponentsResponseValidator;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
 
 /**
  * Example of extending basic capabilities.
  */
-public class ExtendedHttpComponentsRequestBuilder extends HttpComponentsRequestBuilder<ExtendedHttpComponentsRequestBuilder, ExtendedHttpComponentsResponseValidator> {
+public class ExtendedHttpComponentsRequestBuilder extends HttpComponentsRequestBuilder<ExtendedHttpComponentsRequestBuilder> {
 
     public ExtendedHttpComponentsRequestBuilder(HttpClient httpClient, HttpRequestBase request) {
         super(httpClient, request);
+    }
+
+    public ExtendedHttpComponentsResponseValidator expectResponse() {
+        return (ExtendedHttpComponentsResponseValidator) super.expectResponse();
     }
 
     @Override

@@ -18,7 +18,7 @@ package net.javacrumbs.restfire;
 /**
  * Creates the HTTP requests.
  */
-public interface RequestFactory<B extends RequestBuilder<B, V>, V extends ResponseValidator<V>> {
+public interface RequestFactory<B extends RequestBuilder<B>> {
     /**
      * Creates POST request.
      *

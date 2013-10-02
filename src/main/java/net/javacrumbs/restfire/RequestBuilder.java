@@ -22,7 +22,7 @@ import java.net.URI;
  *
  * Types B and V are used to simplify extensions. B stands for RequestBuilder a V for ResponseValidator.
  */
-public interface RequestBuilder<B extends RequestBuilder<B, V>, V extends ResponseValidator<V>>  {
+public interface RequestBuilder<B extends RequestBuilder<B>>  {
 
     /**
      * Sends request to address. Works in a clever way as to not override
@@ -152,5 +152,5 @@ public interface RequestBuilder<B extends RequestBuilder<B, V>, V extends Respon
      * Executes request and switches to response validation mode.
      * @return
      */
-    V expectResponse();
+    <V extends ResponseValidator<V>> ResponseValidator<V> expectResponse();
 }

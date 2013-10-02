@@ -21,7 +21,7 @@ import net.javacrumbs.restfire.httpcomponents.HttpComponentsRequestFactory;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
 
-public class ExtendedHttpComponentsRequestFactory extends HttpComponentsRequestFactory<ExtendedHttpComponentsRequestBuilder, ExtendedHttpComponentsResponseValidator> {
+public class ExtendedHttpComponentsRequestFactory extends HttpComponentsRequestFactory<ExtendedHttpComponentsRequestBuilder> {
     /**
      * Creates HttpComponentsRequestFactory.
      *
