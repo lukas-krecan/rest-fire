@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.restfire;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +30,14 @@ import static net.jadler.Jadler.initJadler;
 import static net.jadler.Jadler.onRequest;
 import static net.jadler.Jadler.port;
 import static net.jadler.Jadler.verifyThatRequest;
+import static net.jadler.matchers.HeaderRequestMatcher.requestHeader;
+import static net.javacrumbs.hamcrest.logger.HamcrestLoggerMatcher.log;
 import static net.javacrumbs.restfire.RestFire.fire;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -253,6 +258,8 @@ public class RestTest {
                 .havingHeaderEqualTo("Content-type", "text/plain")
                 .havingResponseTimeInMillis(lessThan(100))
                 .havingBody(is(""));
+
+        verifyThatRequest().that(log(requestHeader("Accept",hasItem(equalTo("text/plain"))))).receivedOnce();
     }
 
     public void doSimpleTestWithRequestBody(String method, RequestBuilder fireRequest) {
