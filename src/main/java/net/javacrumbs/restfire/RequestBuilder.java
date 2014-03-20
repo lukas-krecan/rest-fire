@@ -153,4 +153,10 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @return
      */
     <V extends ResponseValidator<V>> ResponseValidator<V> expectResponse();
+
+    /**
+     * Returns response for further validation
+     * @return
+     */
+    Response getResponse();
 }

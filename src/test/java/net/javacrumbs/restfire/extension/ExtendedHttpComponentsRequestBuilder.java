@@ -15,8 +15,10 @@
  */
 package net.javacrumbs.restfire.extension;
 
+import net.javacrumbs.restfire.Response;
 import net.javacrumbs.restfire.ResponseValidator;
 import net.javacrumbs.restfire.httpcomponents.HttpComponentsRequestBuilder;
+import net.javacrumbs.restfire.httpcomponents.HttpComponentsResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
 
@@ -29,12 +31,7 @@ public class ExtendedHttpComponentsRequestBuilder extends HttpComponentsRequestB
         super(httpClient, request);
     }
 
-    public ExtendedHttpComponentsResponseValidator expectResponse() {
-        return (ExtendedHttpComponentsResponseValidator) super.expectResponse();
-    }
-
-    @Override
-    protected ExtendedHttpComponentsResponseValidator doCreateResponseValidator(HttpClient httpClient, HttpRequestBase request) {
-        return new ExtendedHttpComponentsResponseValidator(httpClient, request);
+    public ExtendedResponseValidator expectResponse() {
+        return new ExtendedResponseValidator(getResponse());
     }
 }

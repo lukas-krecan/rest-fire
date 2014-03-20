@@ -17,6 +17,7 @@ package net.javacrumbs.restfire.httpcomponents;
 
 import net.javacrumbs.restfire.RequestBuilder;
 import net.javacrumbs.restfire.RequestProcessor;
+import net.javacrumbs.restfire.Response;
 import net.javacrumbs.restfire.ResponseValidator;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -165,8 +166,13 @@ public class HttpComponentsRequestBuilder<B extends RequestBuilder<B>> implement
     }
 
     public <V extends ResponseValidator<V>> ResponseValidator<V> expectResponse() {
+        return getResponse().getValidator();
+    }
+
+
+    public Response getResponse() {
         request.setURI(buildUri());
-        return doCreateResponseValidator(httpClient, request);
+        return doCreateResponse(httpClient, request);
     }
 
     private URI buildUri() {
@@ -178,14 +184,13 @@ public class HttpComponentsRequestBuilder<B extends RequestBuilder<B>> implement
     }
 
     /**
-     * Creates response validator.
-     *
-     * @return response validator
+     * Creates response.
      * @param httpClient
      * @param request
+     * @return
      */
-    protected ResponseValidator doCreateResponseValidator(HttpClient httpClient, HttpRequestBase request) {
-        return new HttpComponentsResponseValidator(httpClient, request);
+    protected Response doCreateResponse(HttpClient httpClient, HttpRequestBase request) {
+        return new HttpComponentsResponse(httpClient, request);
     }
 
     protected URIBuilder getUriBuilder() {

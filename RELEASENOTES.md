@@ -1,5 +1,7 @@
-## 0.0.9
+## 0.1.0
 * Better handling of nulls in response validation
+* Generics in ResponseValidator made more generic
+* Response can be accessed
 
 ## 0.0.8
 * Fixed setHeaders function

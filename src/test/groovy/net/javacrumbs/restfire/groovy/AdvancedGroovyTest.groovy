@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.restfire.groovy;
+package net.javacrumbs.restfire.groovy
 
-import net.javacrumbs.restfire.RequestBuilder;
-import net.javacrumbs.restfire.RequestFactory;
-import net.javacrumbs.restfire.RequestProcessor;
-import net.javacrumbs.restfire.httpcomponents.HttpComponentsRequestFactory;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import net.javacrumbs.restfire.RequestProcessor
+import net.javacrumbs.restfire.httpcomponents.HttpComponentsRequestFactory
+import org.apache.http.client.HttpClient
+import org.apache.http.impl.client.DefaultHttpClient
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
-import static net.jadler.Jadler.closeJadler;
-import static net.jadler.Jadler.initJadler;
-import static net.jadler.Jadler.onRequest;
-import static net.jadler.Jadler.port;
+import static net.jadler.Jadler.*
 
 public class AdvancedGroovyTest {
     private final HttpClient httpClient = new DefaultHttpClient(/** HTTP client config**/);

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.javacrumbs.rest-fire</groupId>
     <artifactId>rest-fire</artifactId>
-    <version>0.0.9-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <url>https://github.com/lukas-krecan/rest-fire</url>
 
     <description>Simple tool for testing REST APIs</description>
@@ -71,7 +71,7 @@
         <dependency>
             <groupId>net.javacrumbs.hamcrest-logger</groupId>
             <artifactId>hamcrest-logger</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

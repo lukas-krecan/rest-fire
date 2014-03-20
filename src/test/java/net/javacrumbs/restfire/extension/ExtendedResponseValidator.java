@@ -15,18 +15,15 @@
  */
 package net.javacrumbs.restfire.extension;
 
-import net.javacrumbs.restfire.httpcomponents.HttpComponentsResponseValidator;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpRequestBase;
+import net.javacrumbs.restfire.Response;
+import net.javacrumbs.restfire.impl.DefaultResponseValidator;
 
-import static org.hamcrest.CoreMatchers.is;
-
-public class ExtendedHttpComponentsResponseValidator extends HttpComponentsResponseValidator<ExtendedHttpComponentsResponseValidator> {
-    public ExtendedHttpComponentsResponseValidator(HttpClient httpClient, HttpRequestBase method) {
-        super(httpClient, method);
+public class ExtendedResponseValidator extends DefaultResponseValidator<ExtendedResponseValidator> {
+    public ExtendedResponseValidator(Response response) {
+        super(response);
     }
 
-    public ExtendedHttpComponentsResponseValidator havingSuperSpecialResponse() {
+    public ExtendedResponseValidator havingSuperSpecialResponse() {
        havingStatusEqualTo(200).havingHeaderEqualTo("Test", "Bam");
        return this;
    }

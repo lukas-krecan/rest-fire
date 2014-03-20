@@ -35,7 +35,7 @@ public interface ResponseValidator<V extends ResponseValidator<V>> {
      * @param statusMatcher
      * @return
      */
-    V havingStatus(Matcher<Integer> statusMatcher);
+    V havingStatus(Matcher<? super Integer> statusMatcher);
 
     /**
      * Compares response body
@@ -49,7 +49,7 @@ public interface ResponseValidator<V extends ResponseValidator<V>> {
      * @param bodyMatcher
      * @return
      */
-    V havingBody(Matcher<String> bodyMatcher);
+    V havingBody(Matcher<? super String> bodyMatcher);
 
     /**
      * Compares response body as byte array
@@ -76,5 +76,5 @@ public interface ResponseValidator<V extends ResponseValidator<V>> {
     /**
      * Checks response time.
      */
-    V havingResponseTimeInMillis(final Matcher<Integer> matcher);
+    V havingResponseTimeInMillis(final Matcher<? super Long> matcher);
 }

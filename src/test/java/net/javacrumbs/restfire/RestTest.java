@@ -15,8 +15,6 @@
  */
 package net.javacrumbs.restfire;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -168,6 +166,14 @@ public class RestTest {
     }
 
     @Test
+     public void testGetResponse() {
+        onRequest().havingPathEqualTo("/test").havingHeader("header", equalTo(asList("one", "two"))).respond().withHeader("header", "three").withHeader("header", "four").withStatus(200);
+        Response response = fire().post().withPath("/test").withHeaders("header", "one", "two").getResponse();
+        assertThat(response.getHeaders().get("header"), equalTo(asList("three", "four")));
+        response.getValidator().havingStatusEqualTo(200).havingHeader("header", equalTo(asList("three", "four")));
+    }
+
+    @Test
     public void testPostStreamBody() {
         onRequest().havingPathEqualTo("/test").havingRawBodyEqualTo(new byte[]{1, 2, 3}).respond().withBody(new byte[]{4, 5, 6}).withStatus(200);
         fire().post().withPath("/test").withBody(new byte[]{1, 2, 3}).expectResponse().havingStatusEqualTo(200).havingRawBody(equalTo(new byte[]{4, 5, 6}));
@@ -206,13 +212,13 @@ public class RestTest {
     }
 
     @Test
-    public void testTooSlow() {
+    public void testToSlow() {
         onRequest().havingPathEqualTo("/test").respond().withDelay(10, TimeUnit.MILLISECONDS);
         try {
-            fire().post().withPath("/test").expectResponse().havingResponseTimeInMillis(lessThan(1));
+            fire().post().withPath("/test").expectResponse().havingResponseTimeInMillis(lessThan(1L));
             fail("Error expected");
         } catch (AssertionError e) {
-            assertThat(e.getMessage(), startsWith("Unexpected response time\nExpected: a value less than <1>"));
+            assertThat(e.getMessage(), startsWith("Unexpected response time\nExpected: a value less than <1L>"));
         }
     }
 
@@ -256,7 +262,7 @@ public class RestTest {
                 .expectResponse()
                 .havingStatusEqualTo(200)
                 .havingHeaderEqualTo("Content-type", "text/plain")
-                .havingResponseTimeInMillis(lessThan(100))
+                .havingResponseTimeInMillis(lessThan(100L))
                 .havingBody(is(""));
 
         verifyThatRequest().that(log(requestHeader("Accept",hasItem(equalTo("text/plain"))))).receivedOnce();
