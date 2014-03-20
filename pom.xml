@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.javacrumbs.rest-fire</groupId>
     <artifactId>rest-fire</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <url>https://github.com/lukas-krecan/rest-fire</url>
 
     <description>Simple tool for testing REST APIs</description>
