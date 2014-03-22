@@ -17,8 +17,11 @@ package net.javacrumbs.restfire.impl;
 
 import org.junit.Test;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 
 public class DefaultHeadersTest {
     private final DefaultHeaders headers = new DefaultHeaders();
@@ -28,7 +31,8 @@ public class DefaultHeadersTest {
         headers.addHeader("rAnDom", "value1");
         headers.addHeader("RaNdOm", "value2");
 
-        assertThat(headers.getHeaders("random"), hasItems("value1", "value2"));
+        assertThat(headers.getHeaders("random"), equalTo(asList("value1", "value2")));
+        assertThat(headers.getHeadersCaseSensitive("RaNdOm"), equalTo(asList("value2")));
     }
 
     @Test
@@ -36,8 +40,18 @@ public class DefaultHeadersTest {
         headers.addHeader("lowerCamelCase", "value");
         headers.addHeader("CamelCase", "value");
         headers.addHeader("rAnDom", "value");
+        headers.addHeader("Content-Type", "value");
 
-        assertThat(headers.getHeaderNames(), hasItems("lowerCamelCase", "CamelCase", "rAnDom"));
+        assertThat(headers.getHeaderNames(), hasItems("Lowercamelcase", "Camelcase", "Random", "Content-type"));
+        assertThat(headers.getHeaderNamesCaseSensitive(), hasItems("lowerCamelCase", "CamelCase", "rAnDom", "Content-Type"));
+    }
+
+    @Test
+    public void emptyReturnsEmptyCllections() {
+        assertThat(headers.getHeaderNames(), empty());
+        assertThat(headers.getHeaderNamesCaseSensitive(), empty());
+        assertThat(headers.getHeaders("test"), empty());
+        assertThat(headers.getHeadersCaseSensitive("test"), empty());
     }
 
 }

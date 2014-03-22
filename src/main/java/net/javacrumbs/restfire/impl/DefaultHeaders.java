@@ -18,10 +18,12 @@ package net.javacrumbs.restfire.impl;
 import com.sun.net.httpserver.Headers;
 import net.javacrumbs.restfire.Response;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Default header implementation.
@@ -30,7 +32,7 @@ import java.util.Set;
  */
 public class DefaultHeaders implements Response.Headers {
     private Headers headers = new Headers();
-    private Set<String> headerNames = new HashSet<String>();
+    private Map<String, List<String>> caseSensitiveHeaders = new HashMap<String, List<String>>();
 
     /**
      * Adds and normalizes the header.
@@ -38,15 +40,32 @@ public class DefaultHeaders implements Response.Headers {
      * @param value
      */
     public void addHeader(String name, String value) {
-        headerNames.add(name);
         headers.add(name, value);
+        List<String> list = caseSensitiveHeaders.get(name);
+        if (list == null) {
+            list = new ArrayList<String>();
+            caseSensitiveHeaders.put(name, list);
+        }
+        list.add(value);
     }
 
     public Collection<String> getHeaderNames() {
-        return headerNames;
+        return headers.keySet();
     }
 
     public List<String> getHeaders(String name) {
-        return headers.get(name);
+        return postProcessList(headers.get(name));
+    }
+
+    private List<String> postProcessList(List<String> values) {
+        return values != null ? Collections.unmodifiableList(values) : Collections.<String>emptyList();
+    }
+
+    public List<String> getHeadersCaseSensitive(String name) {
+        return postProcessList(caseSensitiveHeaders.get(name));
+    }
+
+    public Collection<String> getHeaderNamesCaseSensitive() {
+        return caseSensitiveHeaders.keySet();
     }
 }

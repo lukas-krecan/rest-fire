@@ -15,10 +15,7 @@
  */
 package net.javacrumbs.restfire.extension;
 
-import net.javacrumbs.restfire.Response;
-import net.javacrumbs.restfire.ResponseValidator;
 import net.javacrumbs.restfire.httpcomponents.HttpComponentsRequestBuilder;
-import net.javacrumbs.restfire.httpcomponents.HttpComponentsResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
 

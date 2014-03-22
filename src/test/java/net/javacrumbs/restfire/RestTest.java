@@ -201,7 +201,7 @@ public class RestTest {
             assertEquals(
                     "Expected different header 'content-type'\n" +
                             "Expected: a collection containing \"text/html\"\n" +
-                            "     but: was null",
+                            "     but: ",
                     e.getMessage()
             );
         }
