@@ -109,7 +109,8 @@ public class RestTest {
                     "Expected different status code\n" +
                             "Expected: is <201>\n" +
                             "     but: was <200>",
-                    e.getMessage());
+                    e.getMessage()
+            );
         }
     }
 
@@ -124,7 +125,8 @@ public class RestTest {
                     "Expected different body\n" +
                             "Expected: is \"Ble ble2\"\n" +
                             "     but: was \"Ble ble\"",
-                    e.getMessage());
+                    e.getMessage()
+            );
         }
     }
 
@@ -139,7 +141,8 @@ public class RestTest {
                     "Expected different body\n" +
                             "Expected: a string starting with \"X\"\n" +
                             "     but: was \"Ble ble\"",
-                    e.getMessage());
+                    e.getMessage()
+            );
         }
     }
 
@@ -155,7 +158,8 @@ public class RestTest {
                     "Expected different header 'content-type'\n" +
                             "Expected: a collection containing \"text/html\"\n" +
                             "     but: was \"text/plain\"",
-                    e.getMessage());
+                    e.getMessage()
+            );
         }
     }
 
@@ -166,11 +170,11 @@ public class RestTest {
     }
 
     @Test
-     public void testGetResponse() {
+    public void testGetResponse() {
         onRequest().havingPathEqualTo("/test").havingHeader("header", equalTo(asList("one", "two"))).respond().withHeader("header", "three").withHeader("header", "four").withStatus(200);
         Response response = fire().post().withPath("/test").withHeaders("header", "one", "two").getResponse();
-        assertThat(response.getHeaders().get("header"), equalTo(asList("three", "four")));
-        response.getValidator().havingStatusEqualTo(200).havingHeader("header", equalTo(asList("three", "four")));
+        assertThat(response.getHeaders().getHeaders("header"), equalTo(asList("three", "four")));
+        response.is().havingStatusEqualTo(200).havingHeader("header", equalTo(asList("three", "four")));
     }
 
     @Test
@@ -198,7 +202,8 @@ public class RestTest {
                     "Expected different header 'content-type'\n" +
                             "Expected: a collection containing \"text/html\"\n" +
                             "     but: was null",
-                    e.getMessage());
+                    e.getMessage()
+            );
         }
     }
 
@@ -265,7 +270,7 @@ public class RestTest {
                 .havingResponseTimeInMillis(lessThan(100L))
                 .havingBody(is(""));
 
-        verifyThatRequest().that(log(requestHeader("Accept",hasItem(equalTo("text/plain"))))).receivedOnce();
+        verifyThatRequest().that(log(requestHeader("Accept", hasItem(equalTo("text/plain"))))).receivedOnce();
     }
 
     public void doSimpleTestWithRequestBody(String method, RequestBuilder fireRequest) {

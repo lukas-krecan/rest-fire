@@ -20,7 +20,7 @@ import net.javacrumbs.restfire.ResponseValidator;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -65,8 +65,9 @@ public class DefaultResponseValidator<V extends ResponseValidator<V>> implements
         return (V)this;
     }
 
-    public V havingHeader(String name, Matcher<? super List<String>> headerMatcher) {
-        MatcherAssert.assertThat("Expected different header '"+name+"'", response.getHeaders().get(name.toLowerCase()), headerMatcher);
+    public V havingHeader(String name, Matcher<? super Collection<String>> headerMatcher) {
+        Collection<String> headers = response.getHeaders().getHeaders(name.toLowerCase());
+        MatcherAssert.assertThat("Expected different header '"+name+"'", headers, headerMatcher);
         return (V)this;
     }
 

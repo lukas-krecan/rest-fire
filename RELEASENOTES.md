@@ -1,3 +1,7 @@
+## 0.2.0
+* Response headers wrapped in a special object
+* Breaks backward compatibility, but since the verion 0.1.0 was not announced yet, I think it's not a problem.
+
 ## 0.1.0
 * Better handling of nulls in response validation
 * Generics in ResponseValidator made more generic

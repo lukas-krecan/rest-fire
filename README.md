@@ -28,6 +28,17 @@ Basic usage
         fire().post().to("/test").withBody("bla bla")
             .expectResponse().havingStatusEqualTo(200).havingBody(startsWith("X"));
     }
+
+    @Test
+    public void testGetResponse() {
+        Response response = fire().post().withPath("/test").withHeaders("header", "one", "two").getResponse();
+
+        // can access response values directly
+        assertThat(response.getHeaders().getHeaders("header"), equalTo(asList("three", "four")));
+
+        // or use validator
+        response.is().havingStatusEqualTo(200).havingHeader("header", equalTo(asList("three", "four")));
+    }
     
 
 Default setting
@@ -122,7 +133,7 @@ Maven dependency
     <dependency>
       <groupId>net.javacrumbs.rest-fire</groupId>
       <artifactId>rest-fire</artifactId>
-      <version>0.0.8</version>
+      <version>0.2.0</version>
       <scope>test</scope>
     </dependency>
 

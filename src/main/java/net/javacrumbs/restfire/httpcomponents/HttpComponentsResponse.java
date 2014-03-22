@@ -17,6 +17,7 @@ package net.javacrumbs.restfire.httpcomponents;
 
 import net.javacrumbs.restfire.Response;
 import net.javacrumbs.restfire.ResponseValidator;
+import net.javacrumbs.restfire.impl.DefaultHeaders;
 import net.javacrumbs.restfire.impl.DefaultResponseValidator;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -29,13 +30,6 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 
 /**
  * Wraps HttpComponents response.
@@ -44,7 +38,7 @@ public class HttpComponentsResponse implements Response {
     private final byte[] responseBody;
     private final Charset charset;
     private final long duration;
-    private final Map<String, List<String>> headers;
+    private final Headers headers;
     private final int statusCode;
 
     public HttpComponentsResponse(HttpClient httpClient, HttpRequestBase method) {
@@ -87,7 +81,7 @@ public class HttpComponentsResponse implements Response {
         return statusCode;
     }
 
-    public Map<String, List<String>> getHeaders() {
+    public Headers getHeaders() {
         return headers;
     }
 
@@ -107,17 +101,16 @@ public class HttpComponentsResponse implements Response {
         return new DefaultResponseValidator(this);
     }
 
-    private Map<String, List<String>> buildHeaderMap(HttpResponse response) {
+    public ResponseValidator is() {
+        return getValidator();
+    }
+
+    private static Headers buildHeaderMap(HttpResponse response) {
         Header[] allHeaders = response.getAllHeaders();
-        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        DefaultHeaders result = new DefaultHeaders();
         for (Header header : allHeaders) {
-            List<String> values = new ArrayList<String>();
-            String name = header.getName().toLowerCase();
-            for (Header element :response.getHeaders(name)) {
-                values.add(element.getValue());
-            }
-            result.put(name, unmodifiableList(values));
+            result.addHeader(header.getName(), header.getValue());
         }
-        return unmodifiableMap(result);
+        return result;
     }
 }

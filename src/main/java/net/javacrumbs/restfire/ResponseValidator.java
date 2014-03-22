@@ -17,7 +17,7 @@ package net.javacrumbs.restfire;
 
 import org.hamcrest.Matcher;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Validates the response
@@ -71,7 +71,7 @@ public interface ResponseValidator<V extends ResponseValidator<V>> {
      * @param matcher
      * @return
      */
-    V havingHeader(final String name, final Matcher<? super List<String>> matcher);
+    V havingHeader(final String name, final Matcher<? super Collection<String>> matcher);
 
     /**
      * Checks response time.

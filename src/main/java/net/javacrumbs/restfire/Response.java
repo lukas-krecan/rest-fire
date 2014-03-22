@@ -1,7 +1,7 @@
 package net.javacrumbs.restfire;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Response wrapper
@@ -19,7 +19,7 @@ public interface Response {
      *
      * @return
      */
-    public Map<String, List<String>> getHeaders();
+    public Headers getHeaders();
 
 
     /**
@@ -46,4 +46,28 @@ public interface Response {
      * @return
      */
     public ResponseValidator getValidator();
+
+    /**
+     * Fluent synonym thet returns validator.
+     */
+    public ResponseValidator is();
+
+    /**
+     * Response headers wrapper.
+     */
+    public static interface Headers {
+        /**
+         * Returns header names or an empty collection.
+         * @return
+         */
+        public Collection<String> getHeaderNames();
+
+        /**
+         * Returns header values for given header or an empty collection.
+         * Is case-insensitive regarding the header name.
+         * @param name
+         * @return
+         */
+        public List<String> getHeaders(String name);
+    }
 }
