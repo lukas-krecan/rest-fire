@@ -18,61 +18,61 @@ package net.javacrumbs.restfire;
 /**
  * Creates the HTTP requests.
  */
-public interface RequestFactory<B extends RequestBuilder<B>> {
+public interface RequestFactory {
     /**
      * Creates POST request.
      *
      * @return
      */
-    B post();
+    RequestBuilder post();
 
     /**
      * Creates PUT request.
      *
      * @return
      */
-    B put();
+    RequestBuilder put();
 
     /**
      * Creates PATCH request.
      *
      * @return
      */
-    B patch();
+    RequestBuilder patch();
 
     /**
      * Creates GET request.
      *
      * @return
      */
-    B get();
+    RequestBuilder get();
 
     /**
      * Creates DELETE request.
      *
      * @return
      */
-    B delete();
+    RequestBuilder delete();
 
     /**
      * Creates HEAD request.
      *
      * @return
      */
-    B head();
+    RequestBuilder head();
 
     /**
      * Creates OPTIONS request.
      *
      * @return
      */
-    B options();
+    RequestBuilder options();
 
     /**
      * Creates TRACE request.
      *
      * @return
      */
-    B trace();
+    RequestBuilder trace();
 
 }

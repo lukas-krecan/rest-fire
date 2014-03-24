@@ -33,7 +33,7 @@ import org.apache.http.client.methods.HttpTrace;
  * Apache HTTP client 4 based request factory. Use this directly class for advanced usage and special HttpClient
  * configuration.
  */
-public class HttpComponentsRequestFactory<B extends RequestBuilder<B>> implements RequestFactory<B> {
+public class HttpComponentsRequestFactory implements RequestFactory {
     private final HttpClient httpClient;
     private final RequestProcessor requestProcessor;
 
@@ -47,42 +47,42 @@ public class HttpComponentsRequestFactory<B extends RequestBuilder<B>> implement
         this.requestProcessor = requestProcessor;
     }
 
-    public B post() {
+    public RequestBuilder post() {
         return createRequestBuilder(new HttpPost());
     }
 
-    public B put() {
+    public RequestBuilder put() {
         return createRequestBuilder(new HttpPut());
     }
 
-    public B patch() {
+    public RequestBuilder patch() {
         return createRequestBuilder(new HttpPatch());
     }
 
-    public B get() {
+    public RequestBuilder get() {
         return createRequestBuilder(new HttpGet());
     }
 
-    public B delete() {
+    public RequestBuilder delete() {
         return createRequestBuilder(new HttpDelete());
     }
 
-    public B head() {
+    public RequestBuilder head() {
         return createRequestBuilder(new HttpHead());
     }
 
-    public B options() {
+    public RequestBuilder options() {
         return createRequestBuilder(new HttpOptions());
     }
 
-    public B trace() {
+    public RequestBuilder trace() {
         return createRequestBuilder(new HttpTrace());
     }
 
-    private B createRequestBuilder(HttpRequestBase request) {
+    private RequestBuilder createRequestBuilder(HttpRequestBase request) {
         HttpComponentsRequestBuilder requestBuilder = doCreateRequestBuilder(httpClient, request);
         preprocessRequest(requestBuilder);
-        return (B)requestBuilder;
+        return requestBuilder;
     }
 
     /**

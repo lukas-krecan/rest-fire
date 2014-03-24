@@ -17,45 +17,43 @@ package net.javacrumbs.restfire;
 
 import org.hamcrest.Matcher;
 
-import java.util.Collection;
-
 /**
  * Validates the response
  */
-public interface ResponseValidator<V extends ResponseValidator<V>> {
+public interface ResponseValidator {
     /**
      * Checks the response status.
      * @param status
      * @return
      */
-    V havingStatusEqualTo(int status);
+    ResponseValidator havingStatusEqualTo(int status);
 
     /**
      * Checks the response status.
      * @param statusMatcher
      * @return
      */
-    V havingStatus(Matcher<? super Integer> statusMatcher);
+    ResponseValidator havingStatus(Matcher<? super Integer> statusMatcher);
 
     /**
      * Compares response body
      * @param body
      * @return
      */
-    V havingBodyEqualTo(String body);
+    ResponseValidator havingBodyEqualTo(String body);
 
     /**
      * Compares response body.
      * @param bodyMatcher
      * @return
      */
-    V havingBody(Matcher<? super String> bodyMatcher);
+    ResponseValidator havingBody(Matcher<? super String> bodyMatcher);
 
     /**
      * Compares response body as byte array
      * @return
      */
-    V havingRawBody(Matcher<byte[]> bodyMatcher);
+    ResponseValidator havingRawBody(Matcher<? super byte[]> bodyMatcher);
 
     /**
      * Checks if there is a header with given value.
@@ -63,7 +61,7 @@ public interface ResponseValidator<V extends ResponseValidator<V>> {
      * @param value
      * @return
      */
-    V havingHeaderEqualTo(String name, String value);
+    ResponseValidator havingHeaderEqualTo(String name, String value);
 
     /**
      * Checks response headers.
@@ -71,10 +69,10 @@ public interface ResponseValidator<V extends ResponseValidator<V>> {
      * @param matcher
      * @return
      */
-    V havingHeader(final String name, final Matcher<? super Collection<String>> matcher);
+    ResponseValidator havingHeader(final String name, final Matcher<? extends Iterable<? super String>> matcher);
 
     /**
      * Checks response time.
      */
-    V havingResponseTimeInMillis(final Matcher<? super Long> matcher);
+    ResponseValidator havingResponseTimeInMillis(final Matcher<Long> matcher);
 }

@@ -19,10 +19,8 @@ import java.net.URI;
 
 /**
  * Interface for configuring the request.
- *
- * Types B and V are used to simplify extensions. B stands for RequestBuilder a V for ResponseValidator.
  */
-public interface RequestBuilder<B extends RequestBuilder<B>>  {
+public interface RequestBuilder  {
 
     /**
      * Sends request to address. Works in a clever way as to not override
@@ -31,7 +29,7 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @param address
      * @return
      */
-    B to(String address);
+    RequestBuilder to(String address);
 
     /**
      * Sends request to address. Works in a clever way as to not override
@@ -40,7 +38,7 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @param address
      * @return
      */
-    B to(URI address);
+    RequestBuilder to(URI address);
 
     /**
      * Sets request header.
@@ -48,7 +46,7 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @param value
      * @return
      */
-    B withHeader(String name, String value);
+    RequestBuilder withHeader(String name, String value);
 
     /**
     * Sets request header with multiple values. If no value specified, removes the header.
@@ -56,7 +54,7 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
     * @param values
     * @return
     */
-    B withHeaders(String name, String... values);
+    RequestBuilder withHeaders(String name, String... values);
 
     /**
      * Sets query parameter.
@@ -64,7 +62,7 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @param value
      * @return
      */
-    B withQueryParameter(String name, String value);
+    RequestBuilder withQueryParameter(String name, String value);
 
     /**
      * Sets query parameters. If no parameter specified, removes the parameter.
@@ -72,7 +70,7 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @param values
      * @return
      */
-    B withQueryParameters(String name, String... values);
+    RequestBuilder withQueryParameters(String name, String... values);
 
 
     /**
@@ -80,35 +78,35 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @param uri
      * @return
      */
-    B withPath(String uri);
+    RequestBuilder withPath(String uri);
 
     /**
      * Sets port for the request.
      * @param port
      * @return
      */
-    B withPort(int port);
+    RequestBuilder withPort(int port);
 
     /**
      * Sets port for the request.
      * @param host
      * @return
      */
-    B withHost(String host);
+    RequestBuilder withHost(String host);
 
     /**
      * Sets scheme for the request.
      * @param scheme
      * @return
      */
-    B withScheme(String scheme);
+    RequestBuilder withScheme(String scheme);
 
     /**
      * Sets URI fragment.
      * @param fragment
      * @return
      */
-    B withFragment(String fragment);
+    RequestBuilder withFragment(String fragment);
 
 
     /**
@@ -116,14 +114,14 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @param uri
      * @return
      */
-    B withUri(URI uri);
+    RequestBuilder withUri(URI uri);
 
     /**
      * Sets the whole URI for the request. Default value is http://locahost:8080.
      * @param uri
      * @return
      */
-    B withUri(String uri);
+    RequestBuilder withUri(String uri);
 
     /**
      * Sets request body.
@@ -131,7 +129,7 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @param body
      * @return
      */
-    B withBody(String body);
+    RequestBuilder withBody(String body);
 
     /**
      * Sets request body.
@@ -139,20 +137,20 @@ public interface RequestBuilder<B extends RequestBuilder<B>>  {
      * @param body
      * @return
      */
-    B withBody(byte[] body);
+    RequestBuilder withBody(byte[] body);
 
     /**
      * Advanced configuration. RequestProcess can set multiple parameters at once.
      * @param requestProcessor
      * @return
      */
-    B with(RequestProcessor requestProcessor);
+    RequestBuilder with(RequestProcessor requestProcessor);
 
     /**
      * Executes request and switches to response validation mode.
      * @return
      */
-    <V extends ResponseValidator<V>> ResponseValidator<V> expectResponse();
+    ResponseValidator expectResponse();
 
     /**
      * Returns response for further validation

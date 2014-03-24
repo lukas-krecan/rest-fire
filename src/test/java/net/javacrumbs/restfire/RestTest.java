@@ -31,8 +31,9 @@ import static net.jadler.Jadler.verifyThatRequest;
 import static net.jadler.matchers.HeaderRequestMatcher.requestHeader;
 import static net.javacrumbs.hamcrest.logger.HamcrestLoggerMatcher.log;
 import static net.javacrumbs.restfire.RestFire.fire;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
@@ -86,7 +87,8 @@ public class RestTest {
     public void testToParams() {
         onRequest().havingPathEqualTo("/test").havingParameterEqualTo("param1", "value1").respond().withStatus(200);
 
-        fire().post().to("/test?param1=value1").expectResponse().havingStatusEqualTo(200);
+        fire().post().to("/test?param1=value1").expectResponse().havingStatusEqualTo(200).havingStatus(notNullValue())
+            .havingBody(notNullValue());
     }
 
     private RequestProcessor defaultSettings() {
@@ -164,6 +166,23 @@ public class RestTest {
     }
 
     @Test
+    public void testPostDifferentHeaderMatcher() {
+        onRequest().havingPathEqualTo("/test").havingBodyEqualTo("bla bla")
+                .respond().withBody("Ble ble").withStatus(200).withHeader("header1", "value1").withHeader("header1", "value2");
+        try {
+            fire().post().withPath("/test").withBody("bla bla").expectResponse().havingHeader("header1", equalTo(asList("value1")));
+            fail("Error expected");
+        } catch (AssertionError e) {
+            assertEquals(
+                    "Expected different header 'header1'\n" +
+                            "Expected: <[value1]>\n" +
+                            "     but: was <[value1, value2]>",
+                    e.getMessage()
+            );
+        }
+    }
+
+    @Test
     public void testMultipleHeaders() {
         onRequest().havingPathEqualTo("/test").havingHeader("header", equalTo(asList("one", "two"))).respond().withHeader("header", "three").withHeader("header", "four").withStatus(200);
         fire().post().withPath("/test").withHeaders("header", "one", "two").expectResponse().havingStatusEqualTo(200).havingHeader("header", equalTo(asList("three", "four")));
@@ -180,7 +199,8 @@ public class RestTest {
     @Test
     public void testPostStreamBody() {
         onRequest().havingPathEqualTo("/test").havingRawBodyEqualTo(new byte[]{1, 2, 3}).respond().withBody(new byte[]{4, 5, 6}).withStatus(200);
-        fire().post().withPath("/test").withBody(new byte[]{1, 2, 3}).expectResponse().havingStatusEqualTo(200).havingRawBody(equalTo(new byte[]{4, 5, 6}));
+        fire().post().withPath("/test").withBody(new byte[]{1, 2, 3})
+                .expectResponse().havingStatusEqualTo(200).havingRawBody(notNullValue()).havingRawBody(equalTo(new byte[]{4, 5, 6}));
     }
 
     @Test

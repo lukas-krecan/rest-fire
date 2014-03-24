@@ -1,3 +1,6 @@
+## 0.3.0
+* Generics cleanup
+
 ## 0.2.1
 * Case sensitive header methods added
 

@@ -17,10 +17,10 @@ package net.javacrumbs.restfire.impl;
 
 import net.javacrumbs.restfire.Response;
 import net.javacrumbs.restfire.ResponseValidator;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
-
-import java.util.Collection;
+import org.hamcrest.StringDescription;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -28,56 +28,66 @@ import static org.hamcrest.CoreMatchers.is;
 /**
  * Validates the response.
  */
-public class DefaultResponseValidator<V extends ResponseValidator<V>> implements ResponseValidator<V> {
+public class DefaultResponseValidator implements ResponseValidator {
     private final Response response;
 
     public DefaultResponseValidator(Response response) {
         this.response = response;
     }
 
-    public V havingStatusEqualTo(int status) {
+    public ResponseValidator havingStatusEqualTo(int status) {
         havingStatus(is(status));
-        return (V)this;
+        return this;
     }
 
-    public V havingStatus(Matcher<? super Integer> statusMatcher) {
+    public ResponseValidator havingStatus(Matcher<? super Integer> statusMatcher) {
         MatcherAssert.assertThat("Expected different status code", response.getStatus(), statusMatcher);
-        return (V)this;
+        return this;
     }
 
-    public V havingBodyEqualTo(String body) {
+    public ResponseValidator havingBodyEqualTo(String body) {
         havingBody(is(body));
-        return (V)this;
+        return this;
     }
 
-    public V havingBody(Matcher<? super String> bodyMatcher) {
+    public ResponseValidator havingBody(Matcher<? super String> bodyMatcher) {
         MatcherAssert.assertThat("Expected different body", response.getBody(), bodyMatcher);
-        return (V)this;
+        return this;
     }
 
-    public V havingRawBody(Matcher<byte[]> bodyMatcher) {
+    public ResponseValidator havingRawBody(Matcher<? super byte[]> bodyMatcher) {
         MatcherAssert.assertThat("Expected different body", response.getRawBody(), bodyMatcher);
-        return (V)this;
+        return this;
     }
 
-    public V havingHeaderEqualTo(String name, String value) {
+    public ResponseValidator havingHeaderEqualTo(String name, String value) {
         havingHeader(name, hasItem(value));
-        return (V)this;
+        return this;
     }
 
-    public V havingHeader(String name, Matcher<? super Collection<String>> headerMatcher) {
-        Collection<String> headers = response.getHeaders().getHeaders(name.toLowerCase());
-        MatcherAssert.assertThat("Expected different header '"+name+"'", headers, headerMatcher);
-        return (V)this;
+    public ResponseValidator havingHeader(String name, Matcher<? extends Iterable<? super String>> headerMatcher) {
+        Iterable<String> headers = response.getHeaders().getHeaders(name.toLowerCase());
+        if (!headerMatcher.matches(headers)) {
+            String reason = "Expected different header '" + name + "'";
+            Description description = new StringDescription();
+            description.appendText(reason)
+                    .appendText("\nExpected: ")
+                    .appendDescriptionOf(headerMatcher)
+                    .appendText("\n     but: ");
+            headerMatcher.describeMismatch(headers, description);
+            throw new AssertionError(description.toString());
+        }
+        return this;
     }
 
-    public V havingResponseTimeInMillis(Matcher<? super Long> matcher) {
+    public ResponseValidator havingResponseTimeInMillis(Matcher<Long> matcher) {
         MatcherAssert.assertThat("Unexpected response time", response.getDuration(), matcher);
-        return (V) this;
+        return this;
     }
 
     /**
      * Returns response.
+     *
      * @return
      */
     protected Response getResponse() {
