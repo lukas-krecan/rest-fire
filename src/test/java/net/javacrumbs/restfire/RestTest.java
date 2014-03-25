@@ -158,8 +158,8 @@ public class RestTest {
         } catch (AssertionError e) {
             assertEquals(
                     "Expected different header 'content-type'\n" +
-                            "Expected: a collection containing \"text/html\"\n" +
-                            "     but: was \"text/plain\"",
+                            "Expected: iterable containing [\"text/html\"]\n" +
+                            "     but: item 0: was \"text/plain\"",
                     e.getMessage()
             );
         }
@@ -220,8 +220,8 @@ public class RestTest {
         } catch (AssertionError e) {
             assertEquals(
                     "Expected different header 'content-type'\n" +
-                            "Expected: a collection containing \"text/html\"\n" +
-                            "     but: ",
+                            "Expected: iterable containing [\"text/html\"]\n" +
+                            "     but: No item matched: \"text/html\"",
                     e.getMessage()
             );
         }

@@ -65,14 +65,15 @@ public interface ResponseValidator {
 
     /**
      * Checks response headers.
+     * See http://code.google.com/p/hamcrest/issues/detail?id=100 for more details about generic type.
      * @param name
      * @param matcher
      * @return
      */
-    ResponseValidator havingHeader(final String name, final Matcher<? extends Iterable<? super String>> matcher);
+    ResponseValidator havingHeader(String name, Matcher<? extends Iterable<? extends String>> matcher);
 
     /**
      * Checks response time.
      */
-    ResponseValidator havingResponseTimeInMillis(final Matcher<Long> matcher);
+    ResponseValidator havingResponseTimeInMillis(Matcher<Long> matcher);
 }

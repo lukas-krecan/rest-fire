@@ -20,8 +20,8 @@ import org.junit.Test;
 
 import static net.javacrumbs.restfire.RestFire.fire;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.contains;
 
 public class SampleTest {
 
@@ -32,7 +32,7 @@ public class SampleTest {
                 .withHeader("Accept", "text/html")
         .expectResponse()
                 .havingStatusEqualTo(200)
-                .havingHeader("Content-Type", hasItem(startsWith("text/html")))
+                .havingHeader("Content-Type", contains(startsWith("text/html")))
                 .havingBody(containsString("rest-fire"));
     }
 

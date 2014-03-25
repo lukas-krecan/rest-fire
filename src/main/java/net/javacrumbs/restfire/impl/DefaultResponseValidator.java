@@ -22,8 +22,8 @@ import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.StringDescription;
 
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
 
 /**
  * Validates the response.
@@ -61,11 +61,11 @@ public class DefaultResponseValidator implements ResponseValidator {
     }
 
     public ResponseValidator havingHeaderEqualTo(String name, String value) {
-        havingHeader(name, hasItem(value));
+        havingHeader(name, contains(value));
         return this;
     }
 
-    public ResponseValidator havingHeader(String name, Matcher<? extends Iterable<? super String>> headerMatcher) {
+    public ResponseValidator havingHeader(String name, Matcher<? extends Iterable<? extends String>> headerMatcher) {
         Iterable<String> headers = response.getHeaders().getHeaders(name.toLowerCase());
         if (!headerMatcher.matches(headers)) {
             String reason = "Expected different header '" + name + "'";
