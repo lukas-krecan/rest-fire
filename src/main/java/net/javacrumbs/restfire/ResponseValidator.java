@@ -17,6 +17,8 @@ package net.javacrumbs.restfire;
 
 import org.hamcrest.Matcher;
 
+import java.util.List;
+
 /**
  * Validates the response
  */
@@ -56,7 +58,7 @@ public interface ResponseValidator {
     ResponseValidator havingRawBody(Matcher<? super byte[]> bodyMatcher);
 
     /**
-     * Checks if there is a header with given value.
+     * Checks if there exists a header with given value.
      * @param name
      * @param value
      * @return
@@ -65,12 +67,13 @@ public interface ResponseValidator {
 
     /**
      * Checks response headers.
-     * See http://code.google.com/p/hamcrest/issues/detail?id=100 for more details about generic type.
+     *
+     *  See http://code.google.com/p/hamcrest/issues/detail?id=100 for more details about generic types.
      * @param name
-     * @param matcher
+     * @param headerMatcher
      * @return
      */
-    ResponseValidator havingHeader(String name, Matcher<? extends Iterable<? extends String>> matcher);
+    ResponseValidator havingHeader(final String name, final Matcher<? super List<String>> matcher);
 
     /**
      * Checks response time.

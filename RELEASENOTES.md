@@ -1,5 +1,5 @@
 ## 0.3.0
-* Generics cleanup
+* Generics cleanup. It's no longer extensible, but the code is at least understandable.
 
 ## 0.2.1
 * Case sensitive header methods added

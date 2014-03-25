@@ -17,13 +17,13 @@ package net.javacrumbs.restfire.impl;
 
 import net.javacrumbs.restfire.Response;
 import net.javacrumbs.restfire.ResponseValidator;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.StringDescription;
 
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.contains;
 
 /**
  * Validates the response.
@@ -61,22 +61,13 @@ public class DefaultResponseValidator implements ResponseValidator {
     }
 
     public ResponseValidator havingHeaderEqualTo(String name, String value) {
-        havingHeader(name, contains(value));
+        havingHeader(name, hasItem(value));
         return this;
     }
 
-    public ResponseValidator havingHeader(String name, Matcher<? extends Iterable<? extends String>> headerMatcher) {
-        Iterable<String> headers = response.getHeaders().getHeaders(name.toLowerCase());
-        if (!headerMatcher.matches(headers)) {
-            String reason = "Expected different header '" + name + "'";
-            Description description = new StringDescription();
-            description.appendText(reason)
-                    .appendText("\nExpected: ")
-                    .appendDescriptionOf(headerMatcher)
-                    .appendText("\n     but: ");
-            headerMatcher.describeMismatch(headers, description);
-            throw new AssertionError(description.toString());
-        }
+    public ResponseValidator havingHeader(final String name, final Matcher<? super List<String>> headerMatcher){
+        List<String> headers = response.getHeaders().getHeaders(name.toLowerCase());
+        MatcherAssert.assertThat("Expected different header '" + name + "'", headers, headerMatcher);
         return this;
     }
 
