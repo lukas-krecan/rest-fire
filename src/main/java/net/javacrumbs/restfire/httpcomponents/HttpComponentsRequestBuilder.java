@@ -80,8 +80,19 @@ public class HttpComponentsRequestBuilder implements RequestBuilder {
     }
 
     public RequestBuilder to(URI address) {
-        uriBuilder = new URIBuilder(buildUri().resolve(address));
+        URIBuilder newUriBuilder = new URIBuilder(buildUri().resolve(address));
+        copyParamsIfNeeded(newUriBuilder);
+        uriBuilder = newUriBuilder;
         return this;
+    }
+
+    private void copyParamsIfNeeded(URIBuilder newUriBuilder) {
+        if (newUriBuilder.getQueryParams().isEmpty() && !uriBuilder.getQueryParams().isEmpty()) {
+            //there were parameters set which would be overwritten
+            for (NameValuePair param: uriBuilder.getQueryParams()) {
+                newUriBuilder.addParameter(param.getName(), param.getValue());
+            }
+        }
     }
 
     public RequestBuilder withHeader(String name, String value) {

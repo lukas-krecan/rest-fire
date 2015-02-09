@@ -1,3 +1,6 @@
+## 0.3.1
+* Method to() does not overwrite query parameters
+
 ## 0.3.0
 * Generics cleanup. It's no longer extensible, but the code is at least understandable.
 

@@ -88,7 +88,7 @@ public class RestTest {
         onRequest().havingPathEqualTo("/test").havingParameterEqualTo("param1", "value1").respond().withStatus(200);
 
         fire().post().to("/test?param1=value1").expectResponse().havingStatusEqualTo(200).havingStatus(notNullValue())
-            .havingBody(notNullValue());
+                .havingBody(notNullValue());
     }
 
     private RequestProcessor defaultSettings() {
@@ -237,7 +237,25 @@ public class RestTest {
     }
 
     @Test
-    public void testToSlow() {
+    public void toShouldNotOverwriteParams() {
+        onRequest().havingPathEqualTo("/root/test").respond().withStatus(200);
+
+        fire().get().withQueryParameter("param", "value 1").to("/root/test").expectResponse();
+
+        verifyThatRequest().havingParameterEqualTo("param", "value+1").receivedOnce();
+    }
+
+    @Test
+    public void toWithParamsShouldOverwriteParams() {
+        onRequest().havingPathEqualTo("/root/test").respond().withStatus(200);
+
+        fire().get().withQueryParameter("param", "value 1").to("/root/test?param=xxx").expectResponse();
+
+        verifyThatRequest().havingParameterEqualTo("param", "xxx").receivedOnce();
+    }
+
+    @Test
+    public void testTooSlow() {
         onRequest().havingPathEqualTo("/test").respond().withDelay(10, TimeUnit.MILLISECONDS);
         try {
             fire().post().withPath("/test").expectResponse().havingResponseTimeInMillis(lessThan(1L));
@@ -277,20 +295,23 @@ public class RestTest {
                 .havingMethodEqualTo(method)
                 .havingPathEqualTo("/test")
                 .havingHeaderEqualTo("Accept", "text/plain")
-                .havingParameterEqualTo("param1", "paramValue")
+                .havingParameterEqualTo("param1", "param+Value")
                 .respond().withStatus(200).withHeader("Content-Type", "text/plain");
 
         fireRequest
                 .to("/test")
                 .withHeader("Accept", "text/plain")
-                .withQueryParameter("param1", "paramValue")
+                .withQueryParameter("param1", "param Value")
                 .expectResponse()
                 .havingStatusEqualTo(200)
                 .havingHeaderEqualTo("Content-type", "text/plain")
                 .havingResponseTimeInMillis(lessThan(100L))
                 .havingBody(is(""));
 
-        verifyThatRequest().that(log(requestHeader("Accept", hasItem(equalTo("text/plain"))))).receivedOnce();
+        verifyThatRequest()
+                .that(log(requestHeader("Accept", hasItem(equalTo("text/plain")))))
+                .havingMethodEqualTo(method)
+                .receivedOnce();
     }
 
     public void doSimpleTestWithRequestBody(String method, RequestBuilder fireRequest) {
