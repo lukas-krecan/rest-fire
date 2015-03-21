@@ -30,6 +30,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * Wraps HttpComponents response.
@@ -83,6 +84,17 @@ public class HttpComponentsResponse implements Response {
 
     public Headers getHeaders() {
         return headers;
+    }
+
+    public String getHeader(String headerName) {
+        List<String> headersForName = headers.getHeaders(headerName);
+        if (headersForName == null || headersForName.isEmpty()) {
+            return null;
+        } else if (headersForName.size() > 1) {
+            throw new AssertionError("Expected 1 value for header '" + headerName + "', got " + headersForName.size() + ".");
+        } else {
+            return headersForName.get(0);
+        }
     }
 
     public String getBody() {

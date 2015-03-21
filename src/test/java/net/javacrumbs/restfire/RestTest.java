@@ -197,6 +197,32 @@ public class RestTest {
     }
 
     @Test
+    public void testGetHeaderOkOnOne() {
+        onRequest().havingPathEqualTo("/test").respond().withHeader("header", "value").withStatus(200);
+        Response response = fire().post().withPath("/test").getResponse();
+        assertThat(response.getHeader("header"), equalTo("value"));
+    }
+
+    @Test
+    public void testGetHeaderNullOnEmpty() {
+        onRequest().havingPathEqualTo("/test").respond().withStatus(200);
+        Response response = fire().post().withPath("/test").getResponse();
+        assertThat(response.getHeader("header"), equalTo(null));
+    }
+
+    @Test
+    public void testGetHeaderFailOnMultiple() {
+        onRequest().havingPathEqualTo("/test").respond().withHeader("header", "value1").withHeader("header", "value2").withStatus(200);
+        Response response = fire().post().withPath("/test").getResponse();
+        try {
+            response.getHeader("header");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), equalTo("Expected 1 value for header 'header', got 2."));
+        }
+    }
+
+    @Test
     public void testPostStreamBody() {
         onRequest().havingPathEqualTo("/test").havingRawBodyEqualTo(new byte[]{1, 2, 3}).respond().withBody(new byte[]{4, 5, 6}).withStatus(200);
         fire().post().withPath("/test").withBody(new byte[]{1, 2, 3})

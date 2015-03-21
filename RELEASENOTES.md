@@ -1,3 +1,6 @@
+## 0.4.0
+* Added method Response.getHeader
+
 ## 0.3.2
 * Method to() does not overwrite query parameters
 

@@ -36,6 +36,13 @@ public interface Response {
      */
     public Headers getHeaders();
 
+    /**
+     * Returns value of a header. If header is not present, returns null, if there is multiple header values,
+     * throws AssertionError.
+     * @param headerName
+     * @return
+     */
+    public String getHeader(String headerName);
 
     /**
      * Body as String decoded using response encoding
@@ -67,6 +74,7 @@ public interface Response {
      * Fluent synonym thet returns validator.
      */
     public ResponseValidator is();
+
 
     /**
      * Response headers wrapper.
